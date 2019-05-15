@@ -58,7 +58,15 @@ public class Halo extends ApplicationAdapter {
 	final static short PLAYER_FLAG = 1<<9;
 	final static short ALL_FLAG = -1;
 	
+	
+	/**
+	 * Sprite test
+	 */
+	private Enemy enemy;
+	
 	private void CreateModels() {
+		enemy = new Enemy();
+		enemy.create(camera);
 		modelBatch = new ModelBatch();
 		ModelBuilder modelBuilder = new ModelBuilder();
 		
@@ -180,12 +188,15 @@ public class Halo extends ApplicationAdapter {
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		
+		
+		enemy.render();
+
 		/**
 		 * Decals
 		 */
 		decalManager.renderDecals();
-
-
+		
+		
 //		debugDrawer.begin(camera);
 //		collisionWorld.debugDrawWorld();
 //		debugDrawer.drawLine(camera.position, camera.direction, new Vector3(155, 223, 123));
