@@ -74,11 +74,20 @@ public class Halo extends ApplicationAdapter {
 		
 		Wall wall = new Wall(5 ,5, new Vector3(7.5f, 0, -2.5f),"walls/brain.png");
 		wall.setRotationY(90f);
-		wall.getInstance().calculateBoundingBox(new BoundingBox());
 		decalManager.addWall(wall);
 		collisionWorld.addCollisionObject(wall.getGameObject().body);
 //		collisionWorld.addCollisionObject(wall.getGameObject().body, WALL_FLAG, PLAYER_FLAG);
 		instances.add(wall.getGameObject());
+		
+		
+		Wall wallRot = new Wall(5 ,5, new Vector3(7.5f, 0, -7.5f),"walls/brain.png");
+		wallRot.setRotationY(90f);
+		decalManager.addWall(wallRot);
+		collisionWorld.addCollisionObject(wallRot.getGameObject().body);
+//		collisionWorld.addCollisionObject(wall.getGameObject().body, WALL_FLAG, PLAYER_FLAG);
+		instances.add(wallRot.getGameObject());
+		
+		
 		
 		Wall wall_01 = new Wall(5 ,5, new Vector3(0, 0, 0),"walls/stone_wall_03.png");
 		//wall_01.addCollider();

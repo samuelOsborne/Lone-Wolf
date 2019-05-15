@@ -58,6 +58,7 @@ public class FPSCameraController extends InputAdapter {
 	private Ray fwdRay;
 	private Ray fwdRay2;
 	private Ray fwdRay3;
+	
 	private Vector3 forward = new Vector3(0, 0, 1);
 	private Vector3 halfForward = new Vector3(0, 0, 0.5f);
 	
@@ -164,57 +165,25 @@ public class FPSCameraController extends InputAdapter {
 			fwdRay.set(camera.position, forward);
 			fwdRay2.set(camera.position, camera.direction);
 			fwdRay3.set(camera.position, halfForward);
-			
 			if (rayTest(_btCollisionWorld, fwdRay) == null &&
 					rayTest(_btCollisionWorld, fwdRay2) == null &&
 					rayTest(_btCollisionWorld, fwdRay3) == null)
 			{
 				tmp.set(camera.direction).nor().scl(deltaTime * velocity);
-				
-				System.out.println(camera.direction);
-				
 				tmp.y = 0;
 				camera.position.add(tmp);
 			}
-			else
-			{
-				if (camera.direction.x < 0)
-					tmp.set(Vector3.X).nor().scl(-deltaTime * velocity / 2);
-				else
-					tmp.set(Vector3.X).nor().scl(deltaTime * velocity / 2);
-				camera.position.add(tmp);
-			}
-//						else
+//			else
 //			{
-//				//Check if left or right of you is clear of walls
-//				ray.set(camera.position, forward);
-//				ray2.set(camera.position, camera.direction);
-//
-//				//left
-//				ray.direction.rotate(Vector3.Y, 90);
-//				ray2.direction.rotate(Vector3.Y, 45);
-//
-//				if (camera.direction.x < 0 &&
-//						rayTest(_btCollisionWorld, ray) == null && rayTest(_btCollisionWorld, ray2) == null)
+//				if (camera.direction.x > 0)
 //				{
-//					tmp.set(Vector3.X).nor().scl(-deltaTime * velocity / 2);
+//					tmp.set(Vector3.X).nor().scl(deltaTime * velocity / 2);
 //					camera.position.add(tmp);
 //				}
 //				else
 //				{
-//					//right
-//
-//					ray.set(camera.position, forward);
-//					ray2.set(camera.position, camera.direction);
-//
-//
-//					ray.direction.rotate(Vector3.Y, -90);
-//					ray2.direction.rotate(Vector3.Y, -45);
-//					if (rayTest(_btCollisionWorld, ray) == null && rayTest(_btCollisionWorld, ray2) == null)
-//					{
-//						tmp.set(Vector3.X).nor().scl(deltaTime * velocity / 2);
-//						camera.position.add(tmp);
-//					}
+//					tmp.set(Vector3.X).nor().scl(-deltaTime * velocity / 2);
+//					camera.position.add(tmp);
 //				}
 //			}
 		}
@@ -225,7 +194,6 @@ public class FPSCameraController extends InputAdapter {
 			ray.direction.rotate(Vector3.Y, 180);
 			ray2.direction.rotate(Vector3.Y, 135);
 			ray3.direction.rotate(Vector3.Y, 225);
-			
 			if (rayTest(_btCollisionWorld, ray) == null &&
 					rayTest(_btCollisionWorld, ray2) == null &&
 					rayTest(_btCollisionWorld, ray3) == null )
@@ -238,38 +206,23 @@ public class FPSCameraController extends InputAdapter {
 		if (keys.containsKey(STRAFE_LEFT)) {
 			ray.set(camera.position, camera.direction);
 			ray2.set(camera.position, camera.direction);
-			
 			ray.direction.rotate(Vector3.Y, 90);
 			ray2.direction.rotate(Vector3.Y, 45);
-			
 			if (rayTest(_btCollisionWorld, ray) == null && rayTest(_btCollisionWorld, ray2) == null)
 			{
 				tmp.set(camera.direction).crs(camera.up).nor().scl(-deltaTime * velocity);
-				camera.position.add(tmp);
-			}
-			else
-			{
-				tmp.set(Vector3.X).nor().scl(deltaTime * velocity / 2);
 				camera.position.add(tmp);
 			}
 		}
 		if (keys.containsKey(STRAFE_RIGHT)) {
 			ray.set(camera.position, camera.direction);
 			ray2.set(camera.position, camera.direction);
-			
-			
 			ray.direction.rotate(Vector3.Y, -90);
 			ray2.direction.rotate(Vector3.Y, -45);
 			if (rayTest(_btCollisionWorld, ray) == null && rayTest(_btCollisionWorld, ray2) == null) {
 				tmp.set(camera.direction).crs(camera.up).nor().scl(deltaTime * velocity);
 				camera.position.add(tmp);
 			}
-			else
-			{
-				tmp.set(Vector3.X).nor().scl(-deltaTime * velocity / 2);
-				camera.position.add(tmp);
-			}
-			
 		}
 		updateCollider();
 		camera.update(true);
