@@ -7,12 +7,12 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.physics.bullet.DebugDrawer;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
 import com.badlogic.gdx.utils.Array;
+import com.gdx.halo.Player.Player;
 
 public class Halo extends ApplicationAdapter {
 	class MyContactListener extends ContactListener {
@@ -20,19 +20,13 @@ public class Halo extends ApplicationAdapter {
 		public boolean onContactAdded (int userValue0, int partId0, int index0, int userValue1, int partId1, int index1) {
 			if (userValue0 == 0 || userValue1 == 0)
 			{
-				//firstPersonCameraController.moveBack(Gdx.graphics.getDeltaTime());
-//				instances.get(0).moving = false;
-			
 			}
-//			System.out.println("user contact value 0: " + userValue0);
-//			System.out.println("user contact value 1: " + userValue1);
 			return true;
 		}
 	}
 	
 	private PerspectiveCamera camera;
 	private ModelBatch modelBatch;
-	private FPSCameraController	            firstPersonCameraController;
 	
 	/**
 	 * Decals
@@ -63,6 +57,7 @@ public class Halo extends ApplicationAdapter {
 	 * Sprite test
 	 */
 	private Enemy enemy;
+	private Player  player;
 	
 	private void CreateModels() {
 		enemy = new Enemy();
@@ -73,7 +68,7 @@ public class Halo extends ApplicationAdapter {
 		/**
 		 * Decals
 		 */
-		decalManager = new DecalManager(firstPersonCameraController);
+		decalManager = new DecalManager(camera);
 		
 		decalManager.AddTextureRegions("walls/stone_wall_01.png");
 		decalManager.AddTextureRegions("walls/stone_wall_02.png");
@@ -84,7 +79,6 @@ public class Halo extends ApplicationAdapter {
 		wall.setRotationY(90f);
 		decalManager.addWall(wall);
 		collisionWorld.addCollisionObject(wall.getGameObject().body);
-//		collisionWorld.addCollisionObject(wall.getGameObject().body, WALL_FLAG, PLAYER_FLAG);
 		instances.add(wall.getGameObject());
 		
 		
@@ -92,43 +86,35 @@ public class Halo extends ApplicationAdapter {
 		wallRot.setRotationY(90f);
 		decalManager.addWall(wallRot);
 		collisionWorld.addCollisionObject(wallRot.getGameObject().body);
-//		collisionWorld.addCollisionObject(wall.getGameObject().body, WALL_FLAG, PLAYER_FLAG);
 		instances.add(wallRot.getGameObject());
 		
 		
 		
 		Wall wall_01 = new Wall(5 ,5, new Vector3(0, 0, 0),"walls/stone_wall_03.png");
-		//wall_01.addCollider();
 		decalManager.addWall(wall_01);
 		instances.add(wall_01.getGameObject());
 		collisionWorld.addCollisionObject(wall_01.getGameObject().body);
-//		collisionWorld.addCollisionObject(wall_01.getGameObject().body, WALL_FLAG, PLAYER_FLAG);
 		
 		Wall wall_02 = new Wall(5 ,5, new Vector3(5, 0,0),"walls/stone_wall_01.png");
-		//wall_02.addCollider();
 		decalManager.addWall(wall_02);
 		instances.add(wall_02.getGameObject());
 		collisionWorld.addCollisionObject(wall_02.getGameObject().body);
-		//collisionWorld.addCollisionObject(wall_02.getGameObject().body, WALL_FLAG, PLAYER_FLAG);
 		
 		
 		Wall wall_03 = new Wall(5 ,5, new Vector3(-5, 0,0),"walls/stone_wall_02.png");
 		decalManager.addWall(wall_03);
 		instances.add(wall_03.getGameObject());
 		collisionWorld.addCollisionObject(wall_03.getGameObject().body);
-//		collisionWorld.addCollisionObject(wall_03.getGameObject().body, WALL_FLAG, PLAYER_FLAG);
 		
 		Wall wall_05 = new Wall(5 ,5, new Vector3(-10, 0,0),"walls/stone_wall_02.png");
 		decalManager.addWall(wall_05);
 		instances.add(wall_05.getGameObject());
 		collisionWorld.addCollisionObject(wall_05.getGameObject().body);
-//		collisionWorld.addCollisionObject(wall_05.getGameObject().body, WALL_FLAG, PLAYER_FLAG);
 		
 		
 		Wall wall_06 = new Wall(5 ,5, new Vector3(-15, 0,0),"walls/stone_wall_02.png");
 		decalManager.addWall(wall_06);
 		instances.add(wall_06.getGameObject());
-//		collisionWorld.addCollisionObject(wall_06.getGameObject().body, WALL_FLAG, PLAYER_FLAG);
 		collisionWorld.addCollisionObject(wall_06.getGameObject().body);
 	}
 	
@@ -146,22 +132,22 @@ public class Halo extends ApplicationAdapter {
 		collisionWorld = new btCollisionWorld(dispatcher, broadphase, collisionConfig);
 		instances = new Array<GameObject>();
 		contactListener = new Halo.MyContactListener();
+		
+		/**
+		 * Player
+		 */
+		player = new Player(camera, collisionWorld);
+		
 		/**
 		 * Bullet debug
 		 */
-		
 		debugDrawer = new DebugDrawer();
 		collisionWorld.setDebugDrawer(debugDrawer);
 		debugDrawer.setDebugMode(btIDebugDraw.DebugDrawModes.DBG_MAX_DEBUG_DRAW_MODE);
-		
-		
-		firstPersonCameraController = new FPSCameraController(camera, collisionWorld);
-		Gdx.input.setInputProcessor(firstPersonCameraController);
-		firstPersonCameraController.setVelocity(50f);
-		
-		instances.add(firstPersonCameraController.getGameObject());
-//		collisionWorld.addCollisionObject(firstPersonCameraController.getGameObject().body, PLAYER_FLAG, WALL_FLAG);
-		collisionWorld.addCollisionObject(firstPersonCameraController.getGameObject().body);
+		Gdx.input.setInputProcessor(player.getFpsCameraController());
+		player.setVelocity(50f);
+		instances.add(player.getFpsCameraController().getGameObject());
+		collisionWorld.addCollisionObject(player.getFpsCameraController().getGameObject().body);
 		
 		/**
 		 * Create the wall models
@@ -181,22 +167,22 @@ public class Halo extends ApplicationAdapter {
 		 */
 		collisionWorld.performDiscreteCollisionDetection();
 		
-		
-		firstPersonCameraController.update();
-		camera.update();
-		
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		
+		camera.update();
+//		enemy.render();
 		
-		enemy.render();
-
 		/**
 		 * Decals
 		 */
 		decalManager.renderDecals();
 		
 		
+		player.update();
+		player.render();
+
+
 //		debugDrawer.begin(camera);
 //		collisionWorld.debugDrawWorld();
 //		debugDrawer.drawLine(camera.position, camera.direction, new Vector3(155, 223, 123));
@@ -225,6 +211,10 @@ public class Halo extends ApplicationAdapter {
 	
 	@Override
 	public void resize (int width, int height) {
+		camera.viewportWidth = width;
+		camera.viewportHeight = height;
+		camera.update();
+		player.update();
 	}
 	
 	@Override
@@ -239,8 +229,6 @@ public class Halo extends ApplicationAdapter {
 		camera.near = 1f;
 		camera.far = 300f;
 		camera.update();
-		
 		return camera;
 	}
-
 }

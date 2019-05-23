@@ -62,7 +62,6 @@ public class FPSCameraController extends InputAdapter {
 	private Vector3 forward = new Vector3(0, 0, 1);
 	private Vector3 halfForward = new Vector3(0, 0, 0.5f);
 	
-	
 	public static btCollisionObject rayTest(btCollisionWorld collisionWorld, Ray ray) {
 		rayFrom.set(ray.origin);
 		// 50 meters max from the origin
@@ -82,7 +81,6 @@ public class FPSCameraController extends InputAdapter {
 		}
 		return null;
 	}
-	
 	
 	public FPSCameraController(Camera camera, btCollisionWorld btCollisionWorld) {
 		this._btCollisionWorld = btCollisionWorld;
@@ -124,20 +122,11 @@ public class FPSCameraController extends InputAdapter {
 	public void setDegreesPerPixel (float degreesPerPixel) {
 		this.degreesPerPixel = degreesPerPixel;
 	}
-
-//    @Override
-//    public boolean touchDragged (int screenX, int screenY, int pointer) {
-//        float deltaX = -Gdx.input.getDeltaX() * degreesPerPixel;
-//        float deltaY = -Gdx.input.getDeltaY() * degreesPerPixel;
-//        camera.direction.rotate(camera.up, deltaX);
-//        tmp.set(camera.direction).crs(camera.up).nor();
-//        camera.direction.rotate(tmp, deltaY);
-//        // camera.up.rotate(tmp, deltaY);
-//        return true;
-//    }
 	
-	@Override
-	public boolean mouseMoved(int screenX, int screenY)
+//	@Override
+//	public boolean mouseMoved(int screenX, int screenY)
+	
+	private void updateView()
 	{
 		float deltaX = -Gdx.input.getDeltaX() * degreesPerPixel * 0.5f;
 		float deltaY = -Gdx.input.getDeltaY() * degreesPerPixel * 0.5f;
@@ -148,7 +137,6 @@ public class FPSCameraController extends InputAdapter {
 		Vector3 newPitchAxis = tmp3.set(tmp2).crs(camera.up);
 		if (!newPitchAxis.hasOppositeDirection(oldPitchAxis))
 			camera.direction.set(newDirection);
-		return true;
 	}
 	
 	public void update () {
@@ -224,6 +212,11 @@ public class FPSCameraController extends InputAdapter {
 				camera.position.add(tmp);
 			}
 		}
+		if (Gdx.input.isButtonPressed(Input.Buttons.LEFT))
+		{
+			System.out.println("left mouse");
+		}
+		updateView();
 		updateCollider();
 		camera.update(true);
 	}

@@ -1,0 +1,26 @@
+pistol_animation_2.png.png
+size: 960, 240
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+pistol_base_flash
+  rotate: false
+  xy: 0, 0
+  size: 320, 240
+  orig: 320, 240
+  offset: 0, 0
+  index: -1
+pistol_middle
+  rotate: false
+  xy: 320, 0
+  size: 320, 240
+  orig: 320, 240
+  offset: 0, 0
+  index: -1
+pistol_top
+  rotate: false
+  xy: 640, 0
+  size: 320, 240
+  orig: 320, 240
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,26 @@
+shtg_animation.png
+size: 960, 240
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+SHTG_BASE
+  rotate: false
+  xy: 0, 0
+  size: 320, 240
+  orig: 320, 240
+  offset: 0, 0
+  index: -1
+SHTG_MID
+  rotate: false
+  xy: 320, 0
+  size: 320, 240
+  orig: 320, 240
+  offset: 0, 0
+  index: -1
+SHTG_TOP
+  rotate: false
+  xy: 640, 0
+  size: 320, 240
+  orig: 320, 240
+  offset: 0, 0
+  index: -1

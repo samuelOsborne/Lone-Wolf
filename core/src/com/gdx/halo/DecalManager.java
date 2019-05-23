@@ -1,10 +1,7 @@
 package com.gdx.halo;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
@@ -22,7 +19,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 
 public class DecalManager implements Disposable {
-	private FPSCameraController              camera;
+	private Camera camera;
 	
 	/**
 	 * Decals
@@ -38,11 +35,11 @@ public class DecalManager implements Disposable {
 //	private btCollisionShape                groundObject;
 	private ModelBatch modelBatch;
 
-	public DecalManager(FPSCameraController _camera) {
+	public DecalManager(Camera _camera) {
 		camera = _camera;
 		modelBuilder = new ModelBuilder();
 		modelBatch =  new ModelBatch();
-		decalBatch = new DecalBatch(new CameraGroupStrategy(camera.getCamera()));
+		decalBatch = new DecalBatch(new CameraGroupStrategy(camera));
 	}
 
 	public void AddTextureRegions(String filePath)
@@ -73,7 +70,7 @@ public class DecalManager implements Disposable {
 
 	public void renderDecals()
 	{
-		modelBatch.begin(camera.getCamera());
+		modelBatch.begin(camera);
 		for ( int i = 0; i < objects.size; i++)
 		{
 			ModelInstance tmp = objects.get(i).getInstance();
@@ -81,14 +78,14 @@ public class DecalManager implements Disposable {
 			if (tmp != null)
 				modelBatch.render(tmp);
 		}
-		modelBatch.render(camera.getWireFrameModelInstance());
+//		modelBatch.render(camera.getWireFrameModelInstance());
 		modelBatch.end();
 		
 		for ( int i = 0; i < objects.size; i++)
 		{
 			Decal decal = objects.get(i).getDecal();
 			if (objects.get(i).getLookAt())
-				decal.lookAt(camera.getCamera().position, camera.getCamera().up);
+				decal.lookAt(camera.position, camera.up);
 			decalBatch.add(decal);
 		}
 		decalBatch.flush();

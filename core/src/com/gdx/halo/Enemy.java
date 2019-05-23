@@ -8,11 +8,10 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
-import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
-import com.badlogic.gdx.graphics.g3d.decals.DecalMaterial;
+import com.badlogic.gdx.utils.Disposable;
 
-public class Enemy {
+public class Enemy implements Disposable {
 	private static final int FRAME_COLS = 6, FRAME_ROWS = 5;
 	
 	// Objects used
@@ -90,6 +89,7 @@ public class Enemy {
 		decalBatch.flush();
 	}
 	
+	@Override
 	public void dispose() { // SpriteBatches and Textures must always be disposed
 		spriteBatch.dispose();
 		walkSheet.dispose();
