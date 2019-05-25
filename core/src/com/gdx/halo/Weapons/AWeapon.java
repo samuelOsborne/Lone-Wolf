@@ -1,14 +1,11 @@
 package com.gdx.halo.Weapons;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Disposable;
-
-import javax.swing.text.View;
 
 public abstract class AWeapon implements Disposable {
 	/**
@@ -19,7 +16,7 @@ public abstract class AWeapon implements Disposable {
 	/**
 	 * Max mag size
 	 */
-	private int ammoAmount = 0;
+	private int bulletsLeft = 0;
 	
 	private String  animationPath = "";
 	
@@ -34,6 +31,8 @@ public abstract class AWeapon implements Disposable {
 	private Animation<TextureRegion> fireAnimation;
 	
 	private float stateTime;
+	
+	private Sound   shootingSound;
 	
 	public void init(){
 		this.stateTime = 0f;
@@ -58,7 +57,6 @@ public abstract class AWeapon implements Disposable {
 			}
 		}
 		fireAnimation = new Animation<TextureRegion>(animationSpeed, walkFrames);
-		fireAnimation.setPlayMode(Animation.PlayMode.LOOP);
 		stateTime = 0;
 	}
 	
@@ -82,16 +80,16 @@ public abstract class AWeapon implements Disposable {
 		this.magSize = amount;
 	}
 	
-	public void setAmmoAmount(int amount) {
-		this.ammoAmount = amount;
+	public void setBulletsLeft(int amount) {
+		this.bulletsLeft = amount;
 	}
 	
 	public int getMagSize() {
 		return (magSize);
 	}
 	
-	public int getAmmoAmount() {
-		return (ammoAmount);
+	public int getBulletsLeft() {
+		return (bulletsLeft);
 	}
 	
 	public abstract void fire();
@@ -131,4 +129,12 @@ public abstract class AWeapon implements Disposable {
 	}
 	
 	public abstract void update();
+	
+	public Sound getShootingSound() {
+		return shootingSound;
+	}
+	
+	public void setShootingSound(Sound shootingSound) {
+		this.shootingSound = shootingSound;
+	}
 }

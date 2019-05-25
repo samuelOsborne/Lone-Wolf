@@ -21,6 +21,7 @@ import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
 import com.badlogic.gdx.utils.IntIntMap;
+import com.gdx.halo.Player.Player;
 
 public class FPSCameraController extends InputAdapter {
 	private final Camera camera;
@@ -37,6 +38,7 @@ public class FPSCameraController extends InputAdapter {
 	private final Vector3 tmp = new Vector3();
 	private final Vector3 tmp2 = new Vector3();
 	private final Vector3 tmp3 = new Vector3();
+	private Player  attachedPlayer;
 	
 	/**
 	 * Collider
@@ -82,7 +84,8 @@ public class FPSCameraController extends InputAdapter {
 		return null;
 	}
 	
-	public FPSCameraController(Camera camera, btCollisionWorld btCollisionWorld) {
+	public FPSCameraController(Camera camera, btCollisionWorld btCollisionWorld, Player player) {
+		this.attachedPlayer = player;
 		this._btCollisionWorld = btCollisionWorld;
 		this.camera = camera;
 		Gdx.input.setCursorCatched(true);
@@ -214,7 +217,11 @@ public class FPSCameraController extends InputAdapter {
 		}
 		if (Gdx.input.isButtonPressed(Input.Buttons.LEFT))
 		{
-			System.out.println("left mouse");
+			attachedPlayer.shoot();
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.R))
+		{
+			attachedPlayer.reload();
 		}
 		updateView();
 		updateCollider();

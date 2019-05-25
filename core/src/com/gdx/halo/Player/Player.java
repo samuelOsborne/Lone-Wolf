@@ -14,7 +14,7 @@ public class Player implements Disposable {
 	public Player(Camera _camera, btCollisionWorld _collisionWorld) {
 		camera = _camera;
 		collisionWorld = _collisionWorld;
-		this.fpsCameraController = new FPSCameraController(_camera, _collisionWorld);
+		this.fpsCameraController = new FPSCameraController(_camera, _collisionWorld, this);
 		this.playerHUD = new PlayerHUD(camera);
 	}
 	
@@ -41,6 +41,14 @@ public class Player implements Disposable {
 	
 	public void setVelocity(float velocity) {
 		this.fpsCameraController.setVelocity(velocity);
+	}
+	
+	public void shoot() {
+		this.playerHUD.shoot();
+	}
+	
+	public void reload() {
+		this.playerHUD.reload();
 	}
 	
 	public void update()

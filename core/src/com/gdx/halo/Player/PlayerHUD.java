@@ -30,9 +30,6 @@ public class PlayerHUD implements Disposable {
 	
 	private Pistol pistol;
 	
-	
-	
-	
 	public PlayerHUD(Camera _camera) {
 		this.pistol = new Pistol();
 //		this.camera = _camera;
@@ -79,6 +76,14 @@ public class PlayerHUD implements Disposable {
 //		spriteBatch.begin();
 //		sprite.draw(spriteBatch);
 //		spriteBatch.end();
+	}
+	
+	public void shoot() {
+		this.pistol.fire();
+	}
+	
+	public void reload() {
+		this.pistol.reload();
 	}
 	
 	public void update()
