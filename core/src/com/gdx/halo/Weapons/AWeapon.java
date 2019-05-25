@@ -18,27 +18,25 @@ public abstract class AWeapon implements Disposable {
 	 */
 	private int bulletsLeft = 0;
 	
-	private String  animationPath = "";
-	
-	private float   animationSpeed = 0;
-	
-	private int frameRows = 0;
-	
-	private int frameCols = 0;
-	
 	private float damage = 0;
 	
 	private Animation<TextureRegion> fireAnimation;
 	
-	private float stateTime;
+	private Animation<TextureRegion> reloadAnimation;
 	
 	private Sound   shootingSound;
 	
+	private Sound   reloadSound;
+	
+	
 	public void init(){
-		this.stateTime = 0f;
 	}
 	
-	public void initaliseAnimation()
+	public Animation<TextureRegion> initaliseAnimation(String animationPath,
+	                                                   Animation<TextureRegion> animation,
+	                                                   int frameCols,
+	                                                   int frameRows,
+	                                                   float animationSpeed)
 	{
 		if (frameCols == 0 || frameRows == 0 || animationSpeed == 0 || animationPath.equals(""))
 		{
@@ -56,8 +54,7 @@ public abstract class AWeapon implements Disposable {
 				walkFrames[index++] = tmpTextures[i][j];
 			}
 		}
-		fireAnimation = new Animation<TextureRegion>(animationSpeed, walkFrames);
-		stateTime = 0;
+		return (animation = new Animation<TextureRegion>(animationSpeed, walkFrames));
 	}
 	
 	public Animation<TextureRegion> getFireAnimation() {
@@ -96,38 +93,6 @@ public abstract class AWeapon implements Disposable {
 	
 	public abstract void reload();
 	
-	public void setAnimationSheet(String path) {
-		this.animationPath = path;
-	}
-	
-	public String getAnimationSheet() {
-		return (this.animationPath);
-	}
-	
-	public void setAnimationSpeed(float speed) {
-		this.animationSpeed = speed;
-	}
-	
-	public float getAnimationSpeed() {
-		return (animationSpeed);
-	}
-	
-	public void setFrameCols(int frameCols) {
-		this.frameCols = frameCols;
-	}
-	
-	public int getFrameCols() {
-		return (frameCols);
-	}
-	
-	public void setFrameRows(int frameRows) {
-		this.frameRows = frameRows;
-	}
-	
-	public int getFrameRows() {
-		return (frameRows);
-	}
-	
 	public abstract void update();
 	
 	public Sound getShootingSound() {
@@ -136,5 +101,25 @@ public abstract class AWeapon implements Disposable {
 	
 	public void setShootingSound(Sound shootingSound) {
 		this.shootingSound = shootingSound;
+	}
+	
+	public Sound getReloadSound() {
+		return reloadSound;
+	}
+	
+	public void setReloadSound(Sound reloadSound) {
+		this.reloadSound = reloadSound;
+	}
+	
+	public Animation<TextureRegion> getReloadAnimation() {
+		return reloadAnimation;
+	}
+	
+	public void setReloadAnimation(Animation<TextureRegion> reloadAnimation) {
+		this.reloadAnimation = reloadAnimation;
+	}
+	
+	public void setFireAnimation(Animation<TextureRegion> fireAnimation) {
+		this.fireAnimation = fireAnimation;
 	}
 }
