@@ -12,6 +12,8 @@ import com.badlogic.gdx.physics.bullet.DebugDrawer;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
 import com.badlogic.gdx.utils.Array;
+import com.gdx.halo.Enemies.Enemy;
+import com.gdx.halo.Enemies.EnemyManager;
 import com.gdx.halo.Player.Player;
 
 public class Halo extends ApplicationAdapter {
@@ -56,12 +58,12 @@ public class Halo extends ApplicationAdapter {
 	/**
 	 * Sprite test
 	 */
-	private Enemy enemy;
+	private EnemyManager enemyManager;
 	private Player  player;
 	
 	private void CreateModels() {
-		enemy = new Enemy();
-		enemy.create(camera);
+		enemyManager = new EnemyManager(camera, collisionWorld);
+		enemyManager.addElite(new Vector3(0, 0, 10f));
 		modelBatch = new ModelBatch();
 		ModelBuilder modelBuilder = new ModelBuilder();
 		
@@ -178,9 +180,11 @@ public class Halo extends ApplicationAdapter {
 		decalManager.renderDecals();
 		
 		
-		
+		/**
+			Load enemies for alpha before the player
+		 */
 		Gdx.gl20.glDepthMask(false);
-		enemy.render();
+		enemyManager.render();
 		Gdx.gl20.glDepthMask(true);
 		
 		player.update();

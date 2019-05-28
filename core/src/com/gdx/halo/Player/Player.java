@@ -17,7 +17,7 @@ public class Player implements Disposable {
 	 * Health
 	 */
 	private int                 shieldHealth = 4;
-	private int                 healthBars = 8;
+	private int                 healthBars = 1;
 	
 	public Player(Camera _camera, btCollisionWorld _collisionWorld) {
 		camera = _camera;
