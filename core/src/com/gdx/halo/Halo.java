@@ -121,7 +121,7 @@ public class Halo extends ApplicationAdapter {
 	@Override
 	public void create () {
 		Bullet.init();
-		camera = createCam(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera = createCam(640, 480);
 		
 		/**
 		 * Bullet physics

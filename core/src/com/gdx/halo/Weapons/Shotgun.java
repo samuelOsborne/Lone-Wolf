@@ -1,8 +1,10 @@
 package com.gdx.halo.Weapons;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
 public class Shotgun extends AWeapon {
 	@Override
-	public void render() {
+	public void render(SpriteBatch spriteBatch) {
 	
 	}
 	

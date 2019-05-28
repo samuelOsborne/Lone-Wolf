@@ -11,11 +11,17 @@ public class Player implements Disposable {
 	private Camera              camera;
 	private btCollisionWorld    collisionWorld;
 	
+	/**
+	 * Health
+	 */
+	private int                 shieldHealth = 4;
+	private int                 healthBars = 8;
+	
 	public Player(Camera _camera, btCollisionWorld _collisionWorld) {
 		camera = _camera;
 		collisionWorld = _collisionWorld;
 		this.fpsCameraController = new FPSCameraController(_camera, _collisionWorld, this);
-		this.playerHUD = new PlayerHUD(camera);
+		this.playerHUD = new PlayerHUD(camera, this);
 	}
 	
 	public void render()
@@ -55,5 +61,21 @@ public class Player implements Disposable {
 	{
 		fpsCameraController.update();
 		playerHUD.update();
+	}
+	
+	public int getShieldHealth() {
+		return shieldHealth;
+	}
+	
+	public void setShieldHealth(int shieldHealth) {
+		this.shieldHealth = shieldHealth;
+	}
+	
+	public int getHealthBars() {
+		return healthBars;
+	}
+	
+	public void setHealthBars(int healthBars) {
+		this.healthBars = healthBars;
 	}
 }

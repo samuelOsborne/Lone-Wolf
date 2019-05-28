@@ -2,8 +2,11 @@ package com.gdx.halo.Weapons;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Disposable;
 
@@ -28,8 +31,20 @@ public abstract class AWeapon implements Disposable {
 	
 	private Sound   reloadSound;
 	
+	private Texture reticule;
+	
+	private Texture bullet;
+	
+	private Sprite reloadSign;
+	
+	public static Color hudColor;
+	
+	private float blinkerAlpha = 0f;
 	
 	public void init(){
+		hudColor = new Color();
+		hudColor.set(0.23f, 0.67f, 1f, 1f);
+		this.reloadSign = new Sprite(new Texture("HUD/Alerts/reload.png"));
 	}
 	
 	public Animation<TextureRegion> initaliseAnimation(String animationPath,
@@ -61,7 +76,7 @@ public abstract class AWeapon implements Disposable {
 		return (fireAnimation);
 	}
 	
-	public abstract void render();
+	public abstract void render(SpriteBatch spriteBatch);
 	
 	public void setDamage(float dmg)
 	{
@@ -95,6 +110,14 @@ public abstract class AWeapon implements Disposable {
 	
 	public abstract void update();
 	
+	public void flashReloadIcon(SpriteBatch spriteBatch) {
+		blinkerAlpha += Gdx.graphics.getDeltaTime();
+		reloadSign.setColor(hudColor);
+		reloadSign.setPosition(Gdx.graphics.getWidth() / 2 - 5,
+				Gdx.graphics.getHeight() / 2 + this.reloadSign.getHeight() - 30);
+		reloadSign.draw(spriteBatch, Math.abs((float)Math.sin(blinkerAlpha * 5)));
+	}
+	
 	public Sound getShootingSound() {
 		return shootingSound;
 	}
@@ -121,5 +144,21 @@ public abstract class AWeapon implements Disposable {
 	
 	public void setFireAnimation(Animation<TextureRegion> fireAnimation) {
 		this.fireAnimation = fireAnimation;
+	}
+	
+	public Texture getReticule() {
+		return reticule;
+	}
+	
+	public void setReticule(Texture reticule) {
+		this.reticule = reticule;
+	}
+	
+	public Texture getBullet() {
+		return bullet;
+	}
+	
+	public void setBullet(Texture bullet) {
+		this.bullet = bullet;
 	}
 }
