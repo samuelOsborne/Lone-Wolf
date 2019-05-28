@@ -2,13 +2,16 @@ package com.gdx.halo.Weapons;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.badlogic.gdx.utils.Disposable;
+import com.gdx.halo.Utils.AnimationLoader;
 
 public abstract class AWeapon implements Disposable {
 	/**
@@ -59,17 +62,8 @@ public abstract class AWeapon implements Disposable {
 					"before initialising an animation.");
 		}
 		Texture weaponAnimationSheet = new Texture(Gdx.files.internal(animationPath));
-		TextureRegion[][] tmpTextures = TextureRegion.split(weaponAnimationSheet,
-				weaponAnimationSheet.getWidth() / frameCols,
-				weaponAnimationSheet.getHeight() / frameRows);
-		TextureRegion[] walkFrames = new TextureRegion[frameCols * frameRows];
-		int index = 0;
-		for (int i = 0; i < frameRows; i++) {
-			for (int j = 0; j < frameCols; j++) {
-				walkFrames[index++] = tmpTextures[i][j];
-			}
-		}
-		return (animation = new Animation<TextureRegion>(animationSpeed, walkFrames));
+		TextureRegion[] walkFrames = AnimationLoader.loadAnimation(weaponAnimationSheet,frameCols, frameRows);
+		return (new Animation<TextureRegion>(animationSpeed, walkFrames));
 	}
 	
 	public Animation<TextureRegion> getFireAnimation() {
@@ -104,7 +98,7 @@ public abstract class AWeapon implements Disposable {
 		return (bulletsLeft);
 	}
 	
-	public abstract void fire();
+	public abstract void fire(btCollisionWorld collisionWorld, Camera camera);
 	
 	public abstract void reload();
 	

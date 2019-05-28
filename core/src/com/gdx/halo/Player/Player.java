@@ -4,12 +4,14 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.badlogic.gdx.utils.Disposable;
 import com.gdx.halo.FPSCameraController;
+import com.gdx.halo.Weapons.Pistol;
 
 public class Player implements Disposable {
 	private PlayerHUD           playerHUD;
 	private FPSCameraController fpsCameraController;
 	private Camera              camera;
 	private btCollisionWorld    collisionWorld;
+	private Pistol              pewpew;
 	
 	/**
 	 * Health
@@ -22,6 +24,8 @@ public class Player implements Disposable {
 		collisionWorld = _collisionWorld;
 		this.fpsCameraController = new FPSCameraController(_camera, _collisionWorld, this);
 		this.playerHUD = new PlayerHUD(camera, this);
+		this.pewpew = new Pistol();
+		this.playerHUD.setWeapon(pewpew);
 	}
 	
 	public void render()
@@ -50,7 +54,7 @@ public class Player implements Disposable {
 	}
 	
 	public void shoot() {
-		this.playerHUD.shoot();
+		this.playerHUD.shoot(collisionWorld);
 	}
 	
 	public void reload() {

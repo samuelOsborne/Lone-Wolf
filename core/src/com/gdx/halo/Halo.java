@@ -171,7 +171,6 @@ public class Halo extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		
 		camera.update();
-//		enemy.render();
 		
 		/**
 		 * Decals
@@ -179,9 +178,13 @@ public class Halo extends ApplicationAdapter {
 		decalManager.renderDecals();
 		
 		
+		
+		Gdx.gl20.glDepthMask(false);
+		enemy.render();
+		Gdx.gl20.glDepthMask(true);
+		
 		player.update();
 		player.render();
-
 
 //		debugDrawer.begin(camera);
 //		collisionWorld.debugDrawWorld();

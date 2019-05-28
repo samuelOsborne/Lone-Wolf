@@ -1,18 +1,22 @@
 package com.gdx.halo.Weapons;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.collision.Ray;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
+import com.gdx.halo.FPSCameraController;
 
 public class Pistol extends AWeapon {
 	private float stateTime;
-	//private SpriteBatch spriteBatch;
 	private boolean shooting = false;
 	private boolean reloading = false;
 	private boolean shootingSound = false;
 	private boolean reloadingSound = false;
+	private Ray shootRay;
 	
 	/**
 	 * Textures
@@ -50,6 +54,7 @@ public class Pistol extends AWeapon {
 	
 	public Pistol() {
 		super.init();
+		this.shootRay = new Ray();
 		this.stateTime = 0f;
 		this.pistolTexture = new Texture(pistolTexturePath);
 		this.pistolBulletsTexture = new Texture(pistolBulletsPath);
@@ -125,9 +130,16 @@ public class Pistol extends AWeapon {
 	}
 	
 	@Override
-	public void fire() {
+	public void fire(btCollisionWorld collisionWorld, Camera camera) {
 		if (!reloading)
+		{
 			shooting = true;
+			shootRay.set(camera.position, camera.direction);
+			if (FPSCameraController.rayTest(collisionWorld, shootRay, 50f) != null)
+			{
+				System.out.println("shot");
+			}
+		}
 	}
 	
 	@Override

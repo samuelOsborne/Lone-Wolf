@@ -1,6 +1,8 @@
 package com.gdx.halo.Weapons;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 
 public class Shotgun extends AWeapon {
 	@Override
@@ -9,7 +11,7 @@ public class Shotgun extends AWeapon {
 	}
 	
 	@Override
-	public void fire() {
+	public void fire(btCollisionWorld collisionWorld, Camera camera) {
 	
 	}
 	

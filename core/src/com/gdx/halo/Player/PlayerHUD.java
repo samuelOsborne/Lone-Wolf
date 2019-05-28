@@ -6,14 +6,16 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.badlogic.gdx.utils.Disposable;
-import com.gdx.halo.Weapons.Pistol;
+import com.gdx.halo.Weapons.AWeapon;
 
 public class PlayerHUD implements Disposable {
 	private SpriteBatch spriteBatch;
-	private Pistol pistol;
+	private AWeapon weapon;
 	private Matrix4 viewMatrix;
 	private Player  attachedPlayer;
+	private Camera camera;
 	
 	/**
 	 * Health
@@ -35,10 +37,10 @@ public class PlayerHUD implements Disposable {
 	
 	public PlayerHUD(Camera _camera, Player player) {
 		this.attachedPlayer = player;
+		this.camera = _camera;
 		this.spriteBatch = new SpriteBatch();
 		this.hudColor = new Color();
 		hudColor.set(0.23f, 0.67f, 1f, 1f);
-		this.pistol = new Pistol();
 		this.viewMatrix = new Matrix4();
 		
 		this.healthBar = new Texture(Gdx.files.internal(healthBarPath));
@@ -88,26 +90,38 @@ public class PlayerHUD implements Disposable {
 		
 		spriteBatch.setColor(Color.WHITE);
 		spriteBatch.end();
-		pistol.render(spriteBatch);
+		if (weapon != null)
+			weapon.render(spriteBatch);
 	}
 	
-	public void shoot() {
-		this.pistol.fire();
+	public void shoot(btCollisionWorld collisionWorld) {
+		if (this.weapon != null)
+			this.weapon.fire(collisionWorld, camera);
 	}
 	
 	public void reload() {
-		this.pistol.reload();
+		if (this.weapon != null)
+			this.weapon.reload();
 	}
 	
 	public void update()
 	{
 		viewMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		spriteBatch.setProjectionMatrix(viewMatrix);
-		pistol.update();
+		if (this.weapon != null)
+			weapon.update();
 	}
 	
 	@Override
 	public void dispose() {
 		spriteBatch.dispose();
+	}
+	
+	public AWeapon getWeapon() {
+		return weapon;
+	}
+	
+	public void setWeapon(AWeapon weapon) {
+		this.weapon = weapon;
 	}
 }
