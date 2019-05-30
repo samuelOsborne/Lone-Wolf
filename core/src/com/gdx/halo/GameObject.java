@@ -6,7 +6,7 @@ import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.utils.Disposable;
 
-class GameObject extends ModelInstance implements Disposable {
+public class GameObject extends ModelInstance implements Disposable {
 	public final btCollisionObject body;
 	public boolean moving;
 	
@@ -21,7 +21,7 @@ class GameObject extends ModelInstance implements Disposable {
 		body.dispose();
 	}
 	
-	static class Constructor implements Disposable {
+	public static class Constructor implements Disposable {
 		public final Model model;
 		public final String node;
 		public final btCollisionShape shape;

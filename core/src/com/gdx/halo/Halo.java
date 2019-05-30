@@ -12,7 +12,7 @@ import com.badlogic.gdx.physics.bullet.DebugDrawer;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
 import com.badlogic.gdx.utils.Array;
-import com.gdx.halo.Enemies.Enemy;
+import com.gdx.halo.Enemies.Elite;
 import com.gdx.halo.Enemies.EnemyManager;
 import com.gdx.halo.Player.Player;
 
@@ -50,9 +50,10 @@ public class Halo extends ApplicationAdapter {
 	 */
 	private DebugDrawer debugDrawer;
 	
-	final static short WALL_FLAG = 1<<8;
-	final static short PLAYER_FLAG = 1<<9;
-	final static short ALL_FLAG = -1;
+	public final static short PLAYER_FLAG = 1<<9;
+	public final static short WALL_FLAG = 1<<8;
+	public final static short ENEMY_FLAG = 1<<7;
+	public final static short ALL_FLAG = -1;
 	
 	
 	/**
@@ -63,7 +64,11 @@ public class Halo extends ApplicationAdapter {
 	
 	private void CreateModels() {
 		enemyManager = new EnemyManager(camera, collisionWorld);
-		enemyManager.addElite(new Vector3(0, 0, 10f));
+		Elite elite = new Elite(new Vector3(0, 0, 10f));
+		//enemyManager.addElite(new Vector3(0, 0, 10f));
+		enemyManager.addEnemy(elite);
+		collisionWorld.addCollisionObject(elite.getGameObject().body);
+		
 		modelBatch = new ModelBatch();
 		ModelBuilder modelBuilder = new ModelBuilder();
 		
@@ -138,7 +143,7 @@ public class Halo extends ApplicationAdapter {
 		/**
 		 * Player
 		 */
-		player = new Player(camera, collisionWorld);
+		player = new Player(this, camera, collisionWorld);
 		
 		/**
 		 * Bullet debug
@@ -160,6 +165,11 @@ public class Halo extends ApplicationAdapter {
 	private void addGameObject(GameObject _gameObject) {
 		instances.add(_gameObject);
 		collisionWorld.addCollisionObject(_gameObject.body);
+	}
+	
+	public void damageEnemy(int enemyIndex, int dmg)
+	{
+		this.enemyManager.getEnemies().get(enemyIndex).takeDamage(dmg);
 	}
 	
 	@Override
@@ -187,13 +197,14 @@ public class Halo extends ApplicationAdapter {
 		enemyManager.render();
 		Gdx.gl20.glDepthMask(true);
 		
+		enemyManager.update();
+		
 		player.update();
 		player.render();
 
-//		debugDrawer.begin(camera);
-//		collisionWorld.debugDrawWorld();
-//		debugDrawer.drawLine(camera.position, camera.direction, new Vector3(155, 223, 123));
-//		debugDrawer.end();
+		debugDrawer.begin(camera);
+		collisionWorld.debugDrawWorld();
+		debugDrawer.end();
 	}
 	
 	@Override

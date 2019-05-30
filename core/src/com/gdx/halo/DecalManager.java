@@ -34,14 +34,14 @@ public class DecalManager implements Disposable {
 	 */
 //	private btCollisionShape                groundObject;
 	private ModelBatch modelBatch;
-
+	
 	public DecalManager(Camera _camera) {
 		camera = _camera;
 		modelBuilder = new ModelBuilder();
 		modelBatch =  new ModelBatch();
 		decalBatch = new DecalBatch(new CameraGroupStrategy(camera));
 	}
-
+	
 	public void AddTextureRegions(String filePath)
 	{
 		textureRegions.add(new TextureRegion(new Texture(Gdx.files.internal(filePath))));
@@ -58,28 +58,18 @@ public class DecalManager implements Disposable {
 //		instances.add(wall.getInstance());
 	}
 	
-//	public Array<ModelInstance>     getInstances()
-//	{
-//		return (instances);
-//	}
-	
-//	public Decal getDecal(int decalIndex)
-//	{
-//		return (decals.get(decalIndex));
-//	}
-
 	public void renderDecals()
 	{
-		modelBatch.begin(camera);
-		for ( int i = 0; i < objects.size; i++)
-		{
-			ModelInstance tmp = objects.get(i).getInstance();
-			
-			if (tmp != null)
-				modelBatch.render(tmp);
-		}
-//		modelBatch.render(camera.getWireFrameModelInstance());
-		modelBatch.end();
+//		modelBatch.begin(camera);
+//		for ( int i = 0; i < objects.size; i++)
+//		{
+//			ModelInstance tmp = objects.get(i).getInstance();
+//
+//			if (tmp != null)
+//				modelBatch.render(tmp);
+//		}
+////		modelBatch.render(camera.getWireFrameModelInstance());
+//		modelBatch.end();
 		
 		for ( int i = 0; i < objects.size; i++)
 		{
@@ -90,27 +80,27 @@ public class DecalManager implements Disposable {
 		}
 		decalBatch.flush();
 	}
-
+	
 	public void addCollider(ObjectInstance objectInstance)
 	{
 		modelBuilder.begin();
 		modelBuilder.node().id = "wall";
 		modelBuilder.part("wall", GL20.GL_LINES, VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal, new Material(ColorAttribute.createDiffuse(Color.GREEN)))
 				.box(5f, 5f, 1f);
-
+		
 		Model wireframeCubeModel = modelBuilder.end();
 		ModelInstance wireframeCubeInstance = new ModelInstance(wireframeCubeModel, "wall");
-
+		
 		Matrix4 matWireframeTr = new Matrix4();
 		matWireframeTr.setToTranslation(objectInstance.getDecal().getPosition());
-
+		
 		Matrix4 matWireframeRot = new Matrix4();
 		matWireframeRot.setToRotation(Vector3.X, objectInstance.getDecal().getRotation().getAxisAngle(Vector3.X));
 		matWireframeRot.setToRotation(Vector3.Y, objectInstance.getDecal().getRotation().getAxisAngle(Vector3.Y));
 		wireframeCubeInstance.transform.set(matWireframeTr.getTranslation(new Vector3()), matWireframeRot.getRotation(new Quaternion()));
 		objectInstance.setModelInstance(wireframeCubeInstance);
 	}
-
+	
 	@Override
 	public void dispose() {
 		decalBatch.dispose();

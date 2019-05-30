@@ -11,8 +11,8 @@ public class Shotgun extends AWeapon {
 	}
 	
 	@Override
-	public void fire(btCollisionWorld collisionWorld, Camera camera) {
-	
+	public int fire(btCollisionWorld collisionWorld, Camera camera) {
+		return (0);
 	}
 	
 	@Override

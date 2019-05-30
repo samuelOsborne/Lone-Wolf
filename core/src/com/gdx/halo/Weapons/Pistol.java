@@ -7,8 +7,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.collision.Ray;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.gdx.halo.FPSCameraController;
+
+import static com.gdx.halo.Halo.ENEMY_FLAG;
 
 public class Pistol extends AWeapon {
 	private float stateTime;
@@ -50,10 +53,12 @@ public class Pistol extends AWeapon {
 	private static float weaponWidth = 450f;
 	private static float weaponHeight = 450f;
 	private static float spacing = 200f;
+	private static float bulletDistance = 50f;
 	
 	
 	public Pistol() {
 		super.init();
+		this.weaponType = WeaponType.M40;
 		this.shootRay = new Ray();
 		this.stateTime = 0f;
 		this.pistolTexture = new Texture(pistolTexturePath);
@@ -130,16 +135,23 @@ public class Pistol extends AWeapon {
 	}
 	
 	@Override
-	public void fire(btCollisionWorld collisionWorld, Camera camera) {
+	public int fire(btCollisionWorld collisionWorld, Camera camera) {
+		btCollisionObject collidedObj;
+		
 		if (!reloading)
 		{
+			if (shooting)
+				return (-1);
 			shooting = true;
 			shootRay.set(camera.position, camera.direction);
-			if (FPSCameraController.rayTest(collisionWorld, shootRay, 50f) != null)
+			if ((collidedObj = FPSCameraController.rayTest(collisionWorld, shootRay, bulletDistance, ENEMY_FLAG)) != null)
 			{
 				System.out.println("shot");
+				System.out.println(collidedObj.getUserValue());
+				return (collidedObj.getUserValue());
 			}
 		}
+		return (-1);
 	}
 	
 	@Override

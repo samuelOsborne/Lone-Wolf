@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.badlogic.gdx.utils.Disposable;
 import com.gdx.halo.FPSCameraController;
+import com.gdx.halo.Halo;
+import com.gdx.halo.Weapons.AWeapon;
 import com.gdx.halo.Weapons.Pistol;
 
 public class Player implements Disposable {
@@ -11,21 +13,23 @@ public class Player implements Disposable {
 	private FPSCameraController fpsCameraController;
 	private Camera              camera;
 	private btCollisionWorld    collisionWorld;
-	private Pistol              pewpew;
+	private AWeapon             currentWeapon;
+	private Halo                gameInstance;
 	
 	/**
 	 * Health
 	 */
 	private int                 shieldHealth = 4;
-	private int                 healthBars = 1;
+	private int                 healthBars = 8;
 	
-	public Player(Camera _camera, btCollisionWorld _collisionWorld) {
+	public Player(Halo _gameInstance, Camera _camera, btCollisionWorld _collisionWorld) {
+		this.gameInstance = _gameInstance;
 		camera = _camera;
 		collisionWorld = _collisionWorld;
 		this.fpsCameraController = new FPSCameraController(_camera, _collisionWorld, this);
 		this.playerHUD = new PlayerHUD(camera, this);
-		this.pewpew = new Pistol();
-		this.playerHUD.setWeapon(pewpew);
+		this.currentWeapon = new Pistol();
+		this.playerHUD.setWeapon(currentWeapon);
 	}
 	
 	public void render()
@@ -54,7 +58,27 @@ public class Player implements Disposable {
 	}
 	
 	public void shoot() {
-		this.playerHUD.shoot(collisionWorld);
+		int enemyIndex;
+		
+		if ((enemyIndex = this.playerHUD.shoot(collisionWorld)) != -1)
+		{
+			switch (this.currentWeapon.weaponType)
+			{
+				case M40:
+					this.gameInstance.damageEnemy(enemyIndex, 25);
+					break;
+				case MA5B:
+					break;
+				case SHOTGUN:
+					break;
+				case SNIPER_RIFLE:
+					break;
+				case PLASMA_PISTOL:
+					break;
+				case PLASMA_RIFLE:
+					break;
+			}
+		}
 	}
 	
 	public void reload() {

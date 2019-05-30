@@ -14,6 +14,15 @@ import com.badlogic.gdx.utils.Disposable;
 import com.gdx.halo.Utils.AnimationLoader;
 
 public abstract class AWeapon implements Disposable {
+	public enum WeaponType {
+		M40,
+		MA5B,
+		SHOTGUN,
+		SNIPER_RIFLE,
+		PLASMA_PISTOL,
+		PLASMA_RIFLE
+	}
+	
 	/**
 	 * Current bullets left in mag
 	 */
@@ -23,6 +32,8 @@ public abstract class AWeapon implements Disposable {
 	 * Max mag size
 	 */
 	private int bulletsLeft = 0;
+	
+	public WeaponType   weaponType;
 	
 	private float damage = 0;
 	
@@ -98,7 +109,7 @@ public abstract class AWeapon implements Disposable {
 		return (bulletsLeft);
 	}
 	
-	public abstract void fire(btCollisionWorld collisionWorld, Camera camera);
+	public abstract int fire(btCollisionWorld collisionWorld, Camera camera);
 	
 	public abstract void reload();
 	

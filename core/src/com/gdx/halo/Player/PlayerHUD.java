@@ -94,9 +94,10 @@ public class PlayerHUD implements Disposable {
 			weapon.render(spriteBatch);
 	}
 	
-	public void shoot(btCollisionWorld collisionWorld) {
+	public int shoot(btCollisionWorld collisionWorld) {
 		if (this.weapon != null)
-			this.weapon.fire(collisionWorld, camera);
+			return (this.weapon.fire(collisionWorld, camera));
+		return (-1);
 	}
 	
 	public void reload() {

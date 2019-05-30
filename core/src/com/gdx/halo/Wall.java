@@ -143,7 +143,6 @@ public class Wall implements Disposable, ObjectInstance {
 		gameObject.transform.set(decal.getPosition(), decal.getRotation());
 		gameObject.body.setWorldTransform(gameObject.transform);
 		gameObject.body.setCollisionFlags(WALL_FLAG);
-//		contactListener = new WallColliderListener();
 	}
 	
 	public void updateCollider()
@@ -162,7 +161,6 @@ public class Wall implements Disposable, ObjectInstance {
 	
 	@Override
 	public void dispose() {
-	
 	}
 	
 }

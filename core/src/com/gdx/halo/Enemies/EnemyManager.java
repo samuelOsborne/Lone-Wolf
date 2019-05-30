@@ -24,7 +24,10 @@ public class EnemyManager implements Disposable {
 	
 	public void update()
 	{
-	
+		for (Enemy enemy : enemies)
+		{
+			enemy.update();
+		}
 	}
 	
 	public void render()
@@ -45,6 +48,7 @@ public class EnemyManager implements Disposable {
 	public void addEnemy(Enemy enemy)
 	{
 		this.enemies.add(enemy);
+		enemy.gameObject.body.setUserValue(this.enemies.size - 1);
 	}
 	
 	public Array<Enemy> getEnemies() {

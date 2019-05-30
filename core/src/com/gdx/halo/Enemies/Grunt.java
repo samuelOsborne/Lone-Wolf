@@ -33,4 +33,19 @@ public class Grunt extends Enemy {
 	public void initReloadAnimation() {
 	
 	}
+	
+	@Override
+	public void initCollider() {
+	
+	}
+	
+	@Override
+	public void updateCollider() {
+	
+	}
+	
+	@Override
+	public void update() {
+	
+	}
 }
