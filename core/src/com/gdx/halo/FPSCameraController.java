@@ -16,16 +16,25 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
-import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
-import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
-import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
-import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
+import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.utils.IntIntMap;
 import com.gdx.halo.Player.Player;
 
 import static com.gdx.halo.Halo.WALL_FLAG;
 
 public class FPSCameraController extends InputAdapter {
+	class MyContactListener extends ContactListener {
+		@Override
+		public boolean onContactAdded (int userValue0, int partId0, int index0, int userValue1, int partId1, int index1) {
+			if (userValue0 == 3 || userValue1 == 3)
+			{
+				System.out.println("contact with bullet");
+				attachedPlayer.damagePlayer();
+			}
+			return true;
+		}
+	}
+	
 	private final Camera camera;
 	private final IntIntMap keys = new IntIntMap();
 	private int STRAFE_LEFT = Input.Keys.A;
@@ -50,6 +59,7 @@ public class FPSCameraController extends InputAdapter {
 	private ModelInstance   wireFrameModelInstance;
 	private ModelBuilder    modelBuilder;
 	private btCollisionWorld    _btCollisionWorld;
+	//private MyContactListener   myContactListener;
 	
 	private static final Vector3 rayFrom = new Vector3();
 	private static final Vector3 rayTo = new Vector3();
@@ -88,6 +98,7 @@ public class FPSCameraController extends InputAdapter {
 	public FPSCameraController(Camera camera, btCollisionWorld btCollisionWorld, Player player) {
 		this.attachedPlayer = player;
 		this._btCollisionWorld = btCollisionWorld;
+		//this.myContactListener = new MyContactListener();
 		this.camera = camera;
 		Gdx.input.setCursorCatched(true);
 		modelBuilder = new ModelBuilder();
@@ -244,8 +255,9 @@ public class FPSCameraController extends InputAdapter {
 		 */
 		gameObject = new GameObject.Constructor(wireFrameCubeModel, "player", new btSphereShape(3f)).construct();
 		gameObject.body.setWorldTransform(gameObject.transform);
-		gameObject.body.setUserValue(1);
 		gameObject.body.setCollisionFlags(gameObject.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
+		//gameObject.body.setCollisionFlags(Halo.PLAYER_FLAG);
+		gameObject.body.setUserValue(Halo.USER_USER_VALUE);
 	}
 	
 	public void updateCollider()
@@ -262,5 +274,10 @@ public class FPSCameraController extends InputAdapter {
 	public GameObject getGameObject()
 	{
 		return (gameObject);
+	}
+	
+	public Vector3 getPosition()
+	{
+		return (this.camera.position);
 	}
 }

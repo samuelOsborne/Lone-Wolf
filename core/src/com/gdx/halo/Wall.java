@@ -1,22 +1,16 @@
 package com.gdx.halo;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.bullet.collision.ContactListener;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.utils.Disposable;
+import com.gdx.halo.Utils.ColliderCreator;
 
 import static com.gdx.halo.Halo.WALL_FLAG;
 
@@ -33,12 +27,9 @@ public class Wall implements Disposable, ObjectInstance {
 	 * Bullet
 	 */
 	private GameObject      gameObject;
-	private Model           wireFrameCubeModel;
-	private ModelInstance   wireFrameModelInstance;
-	private ModelBuilder    modelBuilder;
+	private Model           model;
 	
 	public Wall(float width, float height, Vector3 _position, String _texturePath) {
-		modelBuilder = new ModelBuilder();
 		position = new Vector3();
 		rotation = new Vector3();
 		
@@ -51,7 +42,6 @@ public class Wall implements Disposable, ObjectInstance {
 	}
 	
 	public Wall(float width, float height, Vector3 _position, Decal _decal) {
-		modelBuilder = new ModelBuilder();
 		position = new Vector3();
 		rotation = new Vector3();
 		decal = _decal;
@@ -59,21 +49,21 @@ public class Wall implements Disposable, ObjectInstance {
 		addCollider();
 	}
 	
+	@Override
+	public ModelInstance getInstance() {
+		return null;
+	}
+	
+	@Override
+	public void setModelInstance(ModelInstance _modelInstance) {
+	
+	}
+	
 	public void     setTransform(Vector3 _position)
 	{
 		position = _position;
 		this.decal.setPosition(_position);
 		updateCollider();
-	}
-	
-	public ModelInstance     getInstance()
-	{
-		return (wireFrameModelInstance);
-	}
-	
-	public void     setModelInstance(ModelInstance _modelInstance)
-	{
-		wireFrameModelInstance = _modelInstance;
 	}
 	
 	public void     setRotationX(float angle)
@@ -112,13 +102,13 @@ public class Wall implements Disposable, ObjectInstance {
 		decal = _decal;
 	}
 	
-	class WallColliderListener extends ContactListener {
-		@Override
-		public boolean onContactAdded (int userValue0, int partId0, int index0, int userValue1, int partId1, int index1) {
-			System.out.println("contact");
-			return true;
-		}
-	}
+//	class WallColliderListener extends ContactListener {
+//		@Override
+//		public boolean onContactAdded (int userValue0, int partId0, int index0, int userValue1, int partId1, int index1) {
+//			System.out.println("contact");
+//			return true;
+//		}
+//	}
 	
 	public GameObject   getGameObject() { return (gameObject); }
 	
@@ -126,19 +116,12 @@ public class Wall implements Disposable, ObjectInstance {
 	{
 		if (decal == null)
 			return ;
-		modelBuilder.begin();
-		modelBuilder.node().id = "wall";
-		modelBuilder.part("wall", GL20.GL_LINES, VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal, new Material(ColorAttribute.createDiffuse(Color.GREEN)))
-				.box(5f, 5f, 1f);
-		
-		wireFrameCubeModel = modelBuilder.end();
-		wireFrameModelInstance = new ModelInstance(wireFrameCubeModel, "wall");
-		wireFrameModelInstance.transform.set(decal.getPosition(), decal.getRotation());
 		/**
 		 * Collider code
 		 */
-		gameObject = new GameObject.Constructor(wireFrameCubeModel, "wall", new btBoxShape(new Vector3(2.5f, 2.5f, 0.5f))).construct();
-		gameObject.body.setUserValue(0);
+		model = ColliderCreator.createCollider(this.decal, "wall");
+		gameObject = new GameObject.Constructor(model, "wall", new btBoxShape(new Vector3(2.5f, 2.5f, 0.5f))).construct();
+		gameObject.body.setUserValue(Halo.WALL_USER_VALUE);
 		gameObject.body.setCollisionFlags(gameObject.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
 		gameObject.transform.set(decal.getPosition(), decal.getRotation());
 		gameObject.body.setWorldTransform(gameObject.transform);
@@ -147,17 +130,16 @@ public class Wall implements Disposable, ObjectInstance {
 	
 	public void updateCollider()
 	{
- 		if (wireFrameModelInstance == null)
+ 		if (model == null)
 		{
 			addCollider();
 			return ;
 		}
-		wireFrameModelInstance.transform.set(decal.getPosition(), decal.getRotation());
 		gameObject.transform.set(decal.getPosition(), decal.getRotation());
 		gameObject.body.setWorldTransform(gameObject.transform);
 	}
 	
-	public Model getModel(){ return (wireFrameCubeModel); }
+	public Model getModel(){ return (model); }
 	
 	@Override
 	public void dispose() {

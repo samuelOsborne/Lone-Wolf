@@ -1,4 +1,4 @@
-package com.gdx.halo.Weapons;
+package com.gdx.halo.Weapons.Human;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.gdx.halo.FPSCameraController;
+import com.gdx.halo.Weapons.AWeapon;
 
 import static com.gdx.halo.Halo.ENEMY_FLAG;
 
@@ -53,7 +54,7 @@ public class Pistol extends AWeapon {
 	private static float weaponWidth = 450f;
 	private static float weaponHeight = 450f;
 	private static float spacing = 200f;
-	private static float bulletDistance = 50f;
+	private static float bulletDistance = 80f;
 	
 	
 	public Pistol() {
@@ -148,7 +149,8 @@ public class Pistol extends AWeapon {
 			{
 				System.out.println("shot");
 				System.out.println(collidedObj.getUserValue());
-				return (collidedObj.getUserValue());
+				if (collidedObj.getCollisionFlags() == ENEMY_FLAG)
+					return (collidedObj.getUserValue());
 			}
 		}
 		return (-1);

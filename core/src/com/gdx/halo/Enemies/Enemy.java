@@ -52,6 +52,8 @@ public abstract class Enemy implements Disposable {
 	protected float                         stateTime;
 	protected State                         state;
 	protected int                           health;
+	protected Vector3                       position;
+	protected boolean                       remove = false;
 	
 	public Enemy()
 	{
@@ -90,6 +92,8 @@ public abstract class Enemy implements Disposable {
 	public abstract void initCollider();
 	
 	public abstract void updateCollider();
+	
+	public abstract void move();
 	
 	public Animation<TextureRegion> getDeathAnimation() {
 		return deathAnimation;
@@ -144,6 +148,7 @@ public abstract class Enemy implements Disposable {
 	}
 	
 	public void setPosition(Vector3 position) {
+		this.position = position;
 		this.gameObject.transform.set(position, gameObject.transform.getRotation(new Quaternion()));
 		gameObject.body.setWorldTransform(gameObject.transform);
 	}
@@ -172,8 +177,14 @@ public abstract class Enemy implements Disposable {
 		this.health = health;
 	}
 	
+	public boolean getRemove() { return remove; }
+	
+	public void setRemove(boolean remove) { this.remove = remove; }
+	
 	@Override
 	public void dispose() { // SpriteBatches and Textures must always be disposed
+		wireFrameCubeModel.dispose();
+		gameObject.dispose();
 	}
 	
 	public abstract void update();

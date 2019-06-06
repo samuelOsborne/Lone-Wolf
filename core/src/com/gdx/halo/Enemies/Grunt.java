@@ -45,6 +45,11 @@ public class Grunt extends Enemy {
 	}
 	
 	@Override
+	public void move() {
+	
+	}
+	
+	@Override
 	public void update() {
 	
 	}

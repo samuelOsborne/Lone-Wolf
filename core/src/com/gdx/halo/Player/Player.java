@@ -6,7 +6,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.gdx.halo.FPSCameraController;
 import com.gdx.halo.Halo;
 import com.gdx.halo.Weapons.AWeapon;
-import com.gdx.halo.Weapons.Pistol;
+import com.gdx.halo.Weapons.Human.Pistol;
 
 public class Player implements Disposable {
 	private PlayerHUD           playerHUD;
@@ -47,6 +47,14 @@ public class Player implements Disposable {
 	
 	public void setFpsCameraController(FPSCameraController fpsCameraController) {
 		this.fpsCameraController = fpsCameraController;
+	}
+	
+	public void damagePlayer()
+	{
+		if (this.shieldHealth >= 0)
+			this.shieldHealth--;
+		else if (this.healthBars >= 0)
+			this.healthBars--;
 	}
 	
 	public void setPlayerHUD(PlayerHUD playerHUD) {

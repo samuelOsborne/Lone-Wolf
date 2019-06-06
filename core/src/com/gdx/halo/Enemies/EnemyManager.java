@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.gdx.halo.Player.Player;
 
 public class EnemyManager implements Disposable {
 	private Array<Enemy>        enemies;
@@ -27,6 +28,8 @@ public class EnemyManager implements Disposable {
 		for (Enemy enemy : enemies)
 		{
 			enemy.update();
+			if (enemy.getRemove())
+				this.enemies.removeValue(enemy, true);
 		}
 	}
 	
@@ -38,9 +41,9 @@ public class EnemyManager implements Disposable {
 		decalBatch.flush();
 	}
 	
-	public void addElite(Vector3 position)
+	public void addElite(Vector3 position, Player player)
 	{
-		Elite elite = new Elite(position);
+		Elite elite = new Elite(position, player, collisionWorld);
 		
 		this.enemies.add(elite);
 	}

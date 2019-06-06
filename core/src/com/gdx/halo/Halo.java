@@ -17,18 +17,28 @@ import com.gdx.halo.Enemies.EnemyManager;
 import com.gdx.halo.Player.Player;
 
 public class Halo extends ApplicationAdapter {
-	class MyContactListener extends ContactListener {
-		@Override
-		public boolean onContactAdded (int userValue0, int partId0, int index0, int userValue1, int partId1, int index1) {
-			if (userValue0 == 0 || userValue1 == 0)
-			{
-			}
-			return true;
-		}
-	}
+//	public static class MyContactListener extends ContactListener {
+//		@Override
+//		public boolean onContactAdded (int userValue0, int partId0, int index0, int userValue1, int partId1, int index1) {
+//			if (userValue0 == 1 || userValue1 == 3)
+//			{
+//				System.out.println("collision between user and bullet");
+//				return true;
+//			}
+//			return false;
+//		}
+//	}
 	
 	private PerspectiveCamera camera;
 	private ModelBatch modelBatch;
+	
+	/**
+	 * User values
+	 */
+	public final static int WALL_USER_VALUE = 0;
+	public final static int USER_USER_VALUE = 1;
+	public final static int PLASMA_USER_VALUE = 2;
+	public final static int ELITE_USER_VALUE = 3;
 	
 	/**
 	 * Decals
@@ -43,7 +53,7 @@ public class Halo extends ApplicationAdapter {
 	private btCollisionConfiguration collisionConfig;
 	private btDispatcher dispatcher;
 	private btBroadphaseInterface broadphase;
-	private Halo.MyContactListener contactListener;
+//	private Halo.MyContactListener contactListener;
 	
 	/**
 	 * Bullet debugger
@@ -53,8 +63,8 @@ public class Halo extends ApplicationAdapter {
 	public final static short PLAYER_FLAG = 1<<9;
 	public final static short WALL_FLAG = 1<<8;
 	public final static short ENEMY_FLAG = 1<<7;
+	public final static short PLASMA_FLAG = 1<<6;
 	public final static short ALL_FLAG = -1;
-	
 	
 	/**
 	 * Sprite test
@@ -64,7 +74,7 @@ public class Halo extends ApplicationAdapter {
 	
 	private void CreateModels() {
 		enemyManager = new EnemyManager(camera, collisionWorld);
-		Elite elite = new Elite(new Vector3(0, 0, 10f));
+		Elite elite = new Elite(new Vector3(0, 0, 50f), this.player, collisionWorld);
 		//enemyManager.addElite(new Vector3(0, 0, 10f));
 		enemyManager.addEnemy(elite);
 		collisionWorld.addCollisionObject(elite.getGameObject().body);
@@ -138,7 +148,7 @@ public class Halo extends ApplicationAdapter {
 		broadphase = new btDbvtBroadphase();
 		collisionWorld = new btCollisionWorld(dispatcher, broadphase, collisionConfig);
 		instances = new Array<GameObject>();
-		contactListener = new Halo.MyContactListener();
+//		contactListener = new Halo.MyContactListener();
 		
 		/**
 		 * Player
