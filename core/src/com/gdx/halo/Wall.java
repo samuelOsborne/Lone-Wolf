@@ -8,11 +8,10 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
-import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.utils.Disposable;
 import com.gdx.halo.Utils.ColliderCreator;
 
-import static com.gdx.halo.Halo.WALL_FLAG;
+import static com.badlogic.gdx.physics.bullet.collision.btCollisionObject.CollisionFlags.CF_STATIC_OBJECT;
 
 /**
  * Create an interface and use it in decal manager to get the model
@@ -122,10 +121,10 @@ public class Wall implements Disposable, ObjectInstance {
 		model = ColliderCreator.createCollider(this.decal, "wall");
 		gameObject = new GameObject.Constructor(model, "wall", new btBoxShape(new Vector3(2.5f, 2.5f, 0.5f))).construct();
 		gameObject.body.setUserValue(Halo.WALL_USER_VALUE);
-		gameObject.body.setCollisionFlags(gameObject.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
+		gameObject.body.setCollisionFlags(gameObject.body.getCollisionFlags());
 		gameObject.transform.set(decal.getPosition(), decal.getRotation());
 		gameObject.body.setWorldTransform(gameObject.transform);
-		gameObject.body.setCollisionFlags(WALL_FLAG);
+		gameObject.body.setCollisionFlags(CF_STATIC_OBJECT);
 	}
 	
 	public void updateCollider()

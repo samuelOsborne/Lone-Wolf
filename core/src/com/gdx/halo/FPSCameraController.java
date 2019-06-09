@@ -20,7 +20,9 @@ import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.utils.IntIntMap;
 import com.gdx.halo.Player.Player;
 
+import static com.badlogic.gdx.physics.bullet.collision.btCollisionObject.CollisionFlags.CF_STATIC_OBJECT;
 import static com.gdx.halo.Halo.WALL_FLAG;
+import static com.gdx.halo.Utils.RayTest.rayTest;
 
 public class FPSCameraController extends InputAdapter {
 	class MyContactListener extends ContactListener {
@@ -61,10 +63,6 @@ public class FPSCameraController extends InputAdapter {
 	private btCollisionWorld    _btCollisionWorld;
 	//private MyContactListener   myContactListener;
 	
-	private static final Vector3 rayFrom = new Vector3();
-	private static final Vector3 rayTo = new Vector3();
-	private static final ClosestRayResultCallback callback = new ClosestRayResultCallback(rayFrom, rayTo);
-	
 	private Ray ray;
 	private Ray ray2;
 	private Ray ray3;
@@ -75,25 +73,6 @@ public class FPSCameraController extends InputAdapter {
 	
 	private Vector3 forward = new Vector3(0, 0, 1);
 	private Vector3 halfForward = new Vector3(0, 0, 0.5f);
-	
-	public static btCollisionObject rayTest(btCollisionWorld collisionWorld, Ray ray, float distance, short flagToCheck) {
-		rayFrom.set(ray.origin);
-		// 50 meters max from the origin
-		rayTo.set(ray.direction).scl(distance).add(rayFrom);
-		
-		callback.setCollisionObject(null);
-		callback.setClosestHitFraction(1f);
-		Vector3 rayFromWorld = new Vector3();
-		rayFromWorld.set(rayFrom.x, rayFrom.y, rayFrom.z);
-		Vector3 rayToWorld   = new Vector3();
-		rayToWorld.set(rayTo.x, rayTo.y, rayTo.z);
-		collisionWorld.rayTest(rayFrom, rayTo, callback);
-		if (callback.hasHit()) {
-			if (callback.getCollisionObject().getCollisionFlags() == flagToCheck)
-				return callback.getCollisionObject();
-		}
-		return null;
-	}
 	
 	public FPSCameraController(Camera camera, btCollisionWorld btCollisionWorld, Player player) {
 		this.attachedPlayer = player;
@@ -168,9 +147,9 @@ public class FPSCameraController extends InputAdapter {
 			fwdRay.set(camera.position, forward);
 			fwdRay2.set(camera.position, camera.direction);
 			fwdRay3.set(camera.position, halfForward);
-			if (rayTest(_btCollisionWorld, fwdRay, 2.5f, WALL_FLAG) == null &&
-					rayTest(_btCollisionWorld, fwdRay2, 2.5f, WALL_FLAG) == null &&
-					rayTest(_btCollisionWorld, fwdRay3, 2.5f, WALL_FLAG) == null)
+			if (rayTest(_btCollisionWorld, fwdRay, 2.5f, (short)CF_STATIC_OBJECT) == null &&
+					rayTest(_btCollisionWorld, fwdRay2, 2.5f, (short)CF_STATIC_OBJECT) == null &&
+					rayTest(_btCollisionWorld, fwdRay3, 2.5f, (short)CF_STATIC_OBJECT) == null)
 			{
 				tmp.set(camera.direction).nor().scl(deltaTime * velocity);
 				tmp.y = 0;
@@ -197,9 +176,9 @@ public class FPSCameraController extends InputAdapter {
 			ray.direction.rotate(Vector3.Y, 180);
 			ray2.direction.rotate(Vector3.Y, 135);
 			ray3.direction.rotate(Vector3.Y, 225);
-			if (rayTest(_btCollisionWorld, ray, 2.5f, WALL_FLAG) == null &&
-					rayTest(_btCollisionWorld, ray2, 2.5f, WALL_FLAG) == null &&
-					rayTest(_btCollisionWorld, ray3, 2.5f, WALL_FLAG) == null )
+			if (rayTest(_btCollisionWorld, ray, 2.5f, (short)CF_STATIC_OBJECT) == null &&
+					rayTest(_btCollisionWorld, ray2, 2.5f, (short)CF_STATIC_OBJECT) == null &&
+					rayTest(_btCollisionWorld, ray3, 2.5f, (short)CF_STATIC_OBJECT) == null )
 			{
 				tmp.set(camera.direction).nor().scl(-deltaTime * velocity);
 				tmp.y = 0;
@@ -211,7 +190,8 @@ public class FPSCameraController extends InputAdapter {
 			ray2.set(camera.position, camera.direction);
 			ray.direction.rotate(Vector3.Y, 90);
 			ray2.direction.rotate(Vector3.Y, 45);
-			if (rayTest(_btCollisionWorld, ray, 2.5f, WALL_FLAG) == null && rayTest(_btCollisionWorld, ray2, 2.5f, WALL_FLAG) == null)
+			if (rayTest(_btCollisionWorld, ray, 2.5f, (short)CF_STATIC_OBJECT) == null &&
+					rayTest(_btCollisionWorld, ray2, 2.5f, (short)CF_STATIC_OBJECT) == null)
 			{
 				tmp.set(camera.direction).crs(camera.up).nor().scl(-deltaTime * velocity);
 				camera.position.add(tmp);
@@ -222,7 +202,8 @@ public class FPSCameraController extends InputAdapter {
 			ray2.set(camera.position, camera.direction);
 			ray.direction.rotate(Vector3.Y, -90);
 			ray2.direction.rotate(Vector3.Y, -45);
-			if (rayTest(_btCollisionWorld, ray, 2.5f, WALL_FLAG) == null && rayTest(_btCollisionWorld, ray2, 2.5f, WALL_FLAG) == null) {
+			if (rayTest(_btCollisionWorld, ray, 2.5f, (short)CF_STATIC_OBJECT) == null &&
+					rayTest(_btCollisionWorld, ray2, 2.5f, (short)CF_STATIC_OBJECT) == null) {
 				tmp.set(camera.direction).crs(camera.up).nor().scl(deltaTime * velocity);
 				camera.position.add(tmp);
 			}

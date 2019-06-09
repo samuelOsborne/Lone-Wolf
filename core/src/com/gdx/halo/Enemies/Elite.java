@@ -21,6 +21,9 @@ import com.gdx.halo.Utils.AnimationLoader;
 import com.gdx.halo.Utils.ColliderCreator;
 import com.gdx.halo.Weapons.Alien.PlasmaBullet;
 
+import static com.badlogic.gdx.physics.bullet.collision.btCollisionObject.CollisionFlags.CF_CHARACTER_OBJECT;
+import static com.gdx.halo.Halo.*;
+
 public class Elite extends Enemy {
 	private static final int FRAME_COLS = 2, FRAME_ROWS = 1;
 	private Array<PlasmaBullet> plasmaProjectiles;
@@ -93,16 +96,19 @@ public class Elite extends Enemy {
 		switch (state)
 		{
 			case IDLE:
+				this.idleDecal.setPosition(position);
 				this.idleDecal.lookAt(camera.position, camera.up);
 				decalBatch.add(this.idleDecal);
 				break;
 			case WALKING:
 			{
+				this.walkingDecal.setPosition(position);
 				this.walkingDecal.lookAt(camera.position, camera.up);
 				decalBatch.add(this.walkingDecal);
 			}
 			break;
 			case FIRING:
+				this.firingDecal.setPosition(position);
 				this.firingDecal.lookAt(camera.position, camera.up);
 				decalBatch.add(this.firingDecal);
 				for (PlasmaBullet bullet : plasmaProjectiles)
@@ -111,10 +117,12 @@ public class Elite extends Enemy {
 				}
 				break;
 			case RELOADING:
+				this.reloadingDecal.setPosition(position);
 				this.reloadingDecal.lookAt(camera.position, camera.up);
 				decalBatch.add(this.reloadingDecal);
 				break;
 			case DEAD:
+				this.deathDecal.setPosition(position);
 				this.deathDecal.lookAt(camera.position, camera.up);
 				decalBatch.add(this.deathDecal);
 		}
@@ -186,11 +194,11 @@ public class Elite extends Enemy {
 		Model model = ColliderCreator.createCollider(this.firingDecal, "elite");
 		
 		gameObject = new GameObject.Constructor(model, "elite", new btBoxShape(new Vector3(1.5f, 2.5f, 0.5f))).construct();
-		//gameObject.body.setUserValue(Halo.ELITE_USER_VALUE);
+		gameObject.body.setUserValue(Halo.ELITE_USER_VALUE);
 		gameObject.body.setCollisionFlags(gameObject.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
+		gameObject.body.setCollisionFlags(CF_CHARACTER_OBJECT);
 		gameObject.transform.set(this.firingDecal.getPosition(), this.gameObject.transform.getRotation(new Quaternion()));
 		gameObject.body.setWorldTransform(gameObject.transform);
-		gameObject.body.setCollisionFlags(Halo.ENEMY_FLAG);
 	}
 	
 	@Override
@@ -211,7 +219,7 @@ public class Elite extends Enemy {
 					this.gameObject.transform.getRotation(new Quaternion()),
 					new Vector3(player.getFpsCameraController().getPosition()));
 			this.plasmaProjectiles.add(plasmaBullet);
-			this.collisionWorld.addCollisionObject(plasmaBullet.getGameObject().body);
+			this.collisionWorld.addCollisionObject(plasmaBullet.getGameObject().body, PLASMA_FLAG, PLAYER_FLAG | WALL_FLAG);
 			stateTime = 0;
 		}
 	}

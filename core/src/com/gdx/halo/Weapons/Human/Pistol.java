@@ -9,10 +9,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
-import com.gdx.halo.FPSCameraController;
 import com.gdx.halo.Weapons.AWeapon;
 
-import static com.gdx.halo.Halo.ENEMY_FLAG;
+import static com.badlogic.gdx.physics.bullet.collision.btCollisionObject.CollisionFlags.CF_CHARACTER_OBJECT;
+import static com.gdx.halo.Utils.RayTest.rayTest;
 
 public class Pistol extends AWeapon {
 	private float stateTime;
@@ -144,13 +144,15 @@ public class Pistol extends AWeapon {
 			if (shooting)
 				return (-1);
 			shooting = true;
-			shootRay.set(camera.position, camera.direction);
-			if ((collidedObj = FPSCameraController.rayTest(collisionWorld, shootRay, bulletDistance, ENEMY_FLAG)) != null)
+			if (this.getBulletsLeft() != 0)
 			{
-				System.out.println("shot");
-				System.out.println(collidedObj.getUserValue());
-				if (collidedObj.getCollisionFlags() == ENEMY_FLAG)
+				shootRay.set(camera.position, camera.direction);
+				if ((collidedObj = rayTest(collisionWorld,
+						shootRay,
+						bulletDistance, CF_CHARACTER_OBJECT)) != null)
+				{
 					return (collidedObj.getUserValue());
+				}
 			}
 		}
 		return (-1);

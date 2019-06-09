@@ -15,20 +15,14 @@ public class PlasmaBullet extends AProjectile {
 	class MyContactListener extends ContactListener {
 		@Override
 		public boolean onContactAdded (int userValue0, int partId0, int index0, int userValue1, int partId1, int index1) {
-			
-			System.out.println("user v 0 : " + userValue0);
-
-			System.out.println("user v 1 : " + userValue1);
-			
 			if (userValue0 == 1 && userValue1 == 2)
 			{
-				System.out.println("plasma contact with bullet");
 				collidedWithPlayer = true;
 				remove = true;
 			}
-			else if (userValue0 == 0 && userValue1 == 3)
+			else if (userValue0 == Halo.WALL_USER_VALUE && userValue1 == Halo.PLASMA_USER_VALUE)
 			{
-				//remove = true;
+				remove = true;
 			}
 			return true;
 		}
@@ -54,7 +48,6 @@ public class PlasmaBullet extends AProjectile {
 		gameObject.body.setCollisionFlags(gameObject.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
 		gameObject.transform.set(this.projectileDecal.getPosition(), this.gameObject.transform.getRotation(new Quaternion()));
 		gameObject.body.setWorldTransform(gameObject.transform);
-		gameObject.body.setCollisionFlags(Halo.PLASMA_FLAG);
 		gameObject.body.setUserValue(Halo.PLASMA_USER_VALUE);
 	}
 	
