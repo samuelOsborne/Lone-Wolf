@@ -1,14 +1,18 @@
-package com.gdx.halo;
+package com.gdx.halo.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
+import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.gdx.halo.GameObject;
+import com.gdx.halo.Halo;
+import com.gdx.halo.ObjectInstance;
 import com.gdx.halo.Utils.ColliderCreator;
 
 import static com.badlogic.gdx.physics.bullet.collision.btCollisionObject.CollisionFlags.CF_STATIC_OBJECT;
@@ -18,57 +22,82 @@ import static com.badlogic.gdx.physics.bullet.collision.btCollisionObject.Collis
  */
 
 public class Wall implements Disposable, ObjectInstance {
-	private Decal           decal;
+	private Decal           frontDecal;
+	private Decal           leftDecal;
+	private Decal           rightDecal;
+	private Decal           backDecal;
+	private Array<Decal>    wallDecals;
 	private Vector3         position;
 	private Vector3         rotation;
 	
 	/**
 	 * Bullet
 	 */
-	private GameObject      gameObject;
+	private GameObject gameObject;
 	private Model           model;
 	
 	public Wall(float width, float height, Vector3 _position, String _texturePath) {
+		wallDecals = new Array<Decal>(4);
 		position = new Vector3();
 		rotation = new Vector3();
 		
 		TextureRegion   textureRegion = new TextureRegion(new Texture(Gdx.files.internal(_texturePath)));
 		
-		decal = Decal.newDecal(width, height, textureRegion);
-		position = _position;
-		decal.setPosition(position);
+		frontDecal = Decal.newDecal(width, height, textureRegion);
+		position = new Vector3(_position);
+		frontDecal.setPosition(position);
+		wallDecals.add(frontDecal);
+		
+		backDecal = Decal.newDecal(width, height, textureRegion);
+		position = new Vector3(_position);
+		position.z -= 5f;
+		backDecal.setPosition(position);
+		wallDecals.add(backDecal);
+		
+		leftDecal = Decal.newDecal(width, height, textureRegion);
+		position = new Vector3(_position);
+		position.x -= 2.5f;
+		position.z -= 2.5f;
+		leftDecal.setPosition(position);
+		leftDecal.setRotationY(90f);
+		wallDecals.add(leftDecal);
+
+		rightDecal = Decal.newDecal(width, height, textureRegion);
+		position = new Vector3(_position);
+		position.x += 2.5f;
+		position.z -= 2.5f;
+		rightDecal.setPosition(position);
+		rightDecal.setRotationY(90f);
+		wallDecals.add(rightDecal);
+		
 		addCollider();
 	}
 	
 	public Wall(float width, float height, Vector3 _position, Decal _decal) {
 		position = new Vector3();
 		rotation = new Vector3();
-		decal = _decal;
-		decal.setPosition(position);
+		frontDecal = _decal;
+		frontDecal.setPosition(position);
 		addCollider();
 	}
 	
-	@Override
-	public ModelInstance getInstance() {
-		return null;
+	public void render(DecalBatch decalBatch)
+	{
+		for (Decal decal : wallDecals)
+			decalBatch.add(decal);
 	}
-	
-	@Override
-	public void setModelInstance(ModelInstance _modelInstance) {
-	
-	}
-	
+
 	public void     setTransform(Vector3 _position)
 	{
 		position = _position;
-		this.decal.setPosition(_position);
+		this.frontDecal.setPosition(_position);
 		updateCollider();
 	}
 	
 	public void     setRotationX(float angle)
 	{
 		rotation.x = angle;
-		this.decal.setRotationX(angle);
+		this.frontDecal.setRotationX(angle);
 		this.updateCollider();
 	}
 	
@@ -77,52 +106,32 @@ public class Wall implements Disposable, ObjectInstance {
 		return (false);
 	}
 	
-	public void     setRotationY(float angle)
-	{
-		rotation.y = angle;
-		this.decal.setRotationY(angle);
-		this.updateCollider();
-	}
-	
-	public void     setRotationZ(float angle)
-	{
-		rotation.z = angle;
-		this.decal.setRotationZ(angle);
-		this.updateCollider();
-	}
-	
 	public Decal    getDecal()
 	{
-		return (decal);
+		return (frontDecal);
 	}
 	
 	public void     setDecal(Decal _decal)
 	{
-		decal = _decal;
+		frontDecal = _decal;
 	}
-	
-//	class WallColliderListener extends ContactListener {
-//		@Override
-//		public boolean onContactAdded (int userValue0, int partId0, int index0, int userValue1, int partId1, int index1) {
-//			System.out.println("contact");
-//			return true;
-//		}
-//	}
 	
 	public GameObject   getGameObject() { return (gameObject); }
 	
 	public void addCollider()
 	{
-		if (decal == null)
+		if (frontDecal == null)
 			return ;
 		/**
 		 * Collider code
 		 */
-		model = ColliderCreator.createCollider(this.decal, "wall");
-		gameObject = new GameObject.Constructor(model, "wall", new btBoxShape(new Vector3(2.5f, 2.5f, 0.5f))).construct();
+		model = ColliderCreator.createCollider(this.frontDecal, "wall");
+		gameObject = new GameObject.Constructor(model, "wall", new btBoxShape(new Vector3(2.5f, 2.5f, 2.5f))).construct();
 		gameObject.body.setUserValue(Halo.WALL_USER_VALUE);
 		gameObject.body.setCollisionFlags(gameObject.body.getCollisionFlags());
-		gameObject.transform.set(decal.getPosition(), decal.getRotation());
+		Vector3 colliderPos = new Vector3(frontDecal.getPosition());
+		colliderPos.z -= 2.5;
+		gameObject.transform.set(colliderPos, frontDecal.getRotation());
 		gameObject.body.setWorldTransform(gameObject.transform);
 		gameObject.body.setCollisionFlags(CF_STATIC_OBJECT);
 	}
@@ -134,7 +143,7 @@ public class Wall implements Disposable, ObjectInstance {
 			addCollider();
 			return ;
 		}
-		gameObject.transform.set(decal.getPosition(), decal.getRotation());
+		gameObject.transform.set(frontDecal.getPosition(), frontDecal.getRotation());
 		gameObject.body.setWorldTransform(gameObject.transform);
 	}
 	
