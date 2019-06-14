@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
@@ -46,6 +47,14 @@ public class EnemyManager implements Disposable {
 		Elite elite = new Elite(position, player, collisionWorld);
 		
 		this.enemies.add(elite);
+	}
+	
+	public void removeBullet(btCollisionObject btCollisionObject)
+	{
+		for (Enemy e : enemies)
+		{
+			e.removeBullet(btCollisionObject);
+		}
 	}
 	
 	public void addEnemy(Enemy enemy)

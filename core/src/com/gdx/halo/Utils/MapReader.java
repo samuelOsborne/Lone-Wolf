@@ -26,13 +26,11 @@ public class MapReader {
 		
 		if (mapFile == null)
 			throw new Exception("Map file path is null!");
-		//File file = new File(filePath);
 		BufferedReader br = new BufferedReader(new FileReader(mapFile.file()));
 		
 		String st;
 		while ((st = br.readLine()) != null)
 		{
-			System.out.println(st);
 			for (int i = 0; i < st.length(); i++)
 			{
 				if (st.charAt(i) == 'x')

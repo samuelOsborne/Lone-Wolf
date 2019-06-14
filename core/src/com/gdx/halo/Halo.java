@@ -12,8 +12,10 @@ import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
 import com.gdx.halo.Enemies.Elite;
 import com.gdx.halo.Enemies.Enemy;
 import com.gdx.halo.Enemies.EnemyManager;
+import com.gdx.halo.Enemies.Grunt;
 import com.gdx.halo.Player.Player;
 import com.gdx.halo.Utils.MapReader;
+import com.gdx.halo.Utils.UtilsContactListener;
 
 public class Halo extends ApplicationAdapter {
 	private PerspectiveCamera camera;
@@ -22,9 +24,10 @@ public class Halo extends ApplicationAdapter {
 	 * User values
 	 */
 	public final static int WALL_USER_VALUE = 0;
-	public final static int USER_USER_VALUE = 1;
+	public final static int PLAYER_USER_VALUE = 1;
 	public final static int PLASMA_USER_VALUE = 2;
 	public final static int ELITE_USER_VALUE = 3;
+	public final static int GRUNT_USER_VALUE = 4;
 	
 	/**
 	 * Decals
@@ -34,10 +37,11 @@ public class Halo extends ApplicationAdapter {
 	/**
 	 * Bullet physics
 	 */
-	private btCollisionWorld collisionWorld;
-	private btCollisionConfiguration collisionConfig;
-	private btDispatcher dispatcher;
-	private btBroadphaseInterface broadphase;
+	private btCollisionWorld            collisionWorld;
+	private btCollisionConfiguration    collisionConfig;
+	private btDispatcher                dispatcher;
+	private btBroadphaseInterface       broadphase;
+	private UtilsContactListener        utilsContactListener;
 	
 	/**
 	 * Bullet debugger
@@ -63,9 +67,17 @@ public class Halo extends ApplicationAdapter {
 	
 	private void CreateModels() {
 		enemyManager = new EnemyManager(camera, collisionWorld);
+		
+		Grunt grunt = new Grunt(new Vector3(0, 0, 55f), this.player, collisionWorld);
+		enemyManager.addEnemy(grunt);
+		collisionWorld.addCollisionObject(grunt.getGameObject().body, ENEMY_FLAG);
+
+
 		Elite elite = new Elite(new Vector3(0, 0, 60f), this.player, collisionWorld);
 		enemyManager.addEnemy(elite);
 		collisionWorld.addCollisionObject(elite.getGameObject().body, ENEMY_FLAG);
+		
+		
 		
 		/**
 		 * Decals
@@ -85,6 +97,7 @@ public class Halo extends ApplicationAdapter {
 		dispatcher = new btCollisionDispatcher(collisionConfig);
 		broadphase = new btDbvtBroadphase();
 		collisionWorld = new btCollisionWorld(dispatcher, broadphase, collisionConfig);
+		utilsContactListener = new UtilsContactListener(this);
 		
 		/**
 		 * Player
@@ -113,6 +126,11 @@ public class Halo extends ApplicationAdapter {
 		}
 	}
 	
+	public void removeBullet(btCollisionObject btCollisionObject)
+	{
+		this.enemyManager.removeBullet(btCollisionObject);
+	}
+	
 	public void damageEnemy(int enemyIndex, int dmg)
 	{
 		Enemy enemy = this.enemyManager.getEnemies().get(enemyIndex);
@@ -122,11 +140,6 @@ public class Halo extends ApplicationAdapter {
 	
 	@Override
 	public void render () {
-		/**
-		 * Physics
-		 */
-		collisionWorld.performDiscreteCollisionDetection();
-		
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		
@@ -150,6 +163,11 @@ public class Halo extends ApplicationAdapter {
 		player.update();
 		player.render();
 		
+		/**
+		 * Physics
+		 */
+		collisionWorld.performDiscreteCollisionDetection();
+
 //		debugDrawer.begin(camera);
 //		collisionWorld.debugDrawWorld();
 //		debugDrawer.end();
@@ -178,6 +196,10 @@ public class Halo extends ApplicationAdapter {
 	@Override
 	public void pause () {
 	}
+	
+	public Player getPlayer() { return this.player; }
+	
+	public void setPlayer(Player player) { this.player = player; }
 	
 	private PerspectiveCamera createCam(int width, int height) {
 		PerspectiveCamera camera = new PerspectiveCamera(90,

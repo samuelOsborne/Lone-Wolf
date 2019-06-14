@@ -21,6 +21,8 @@ import com.gdx.halo.Utils.AnimationLoader;
 import com.gdx.halo.Utils.ColliderCreator;
 import com.gdx.halo.Weapons.Alien.PlasmaBullet;
 
+import java.util.Iterator;
+
 import static com.badlogic.gdx.physics.bullet.collision.btCollisionObject.CollisionFlags.CF_CHARACTER_OBJECT;
 import static com.gdx.halo.Halo.*;
 
@@ -55,6 +57,7 @@ public class Elite extends Enemy {
 		this.initDeathAnimation();
 		this.initFireAnimation();
 		this.initWalkAnimation();
+		this.initFlinchDecal();
 		this.initCollider();
 	}
 	
@@ -65,28 +68,31 @@ public class Elite extends Enemy {
 		if (this.health <= 0) {
 			this.state = State.DEAD;
 			this.deathTimer += Gdx.graphics.getDeltaTime();
+			collisionWorld.removeCollisionObject(this.gameObject.body);
 			if (deathTimer >= 5)
-			{
 				remove = true;
-				collisionWorld.removeCollisionObject(this.gameObject.body);
-			}
 		}
 		else {
 			//After x amount of seconds fire again
 			this.shoot();
 			this.move();
 		}
-		for (PlasmaBullet bullet : plasmaProjectiles)
+		Iterator<PlasmaBullet> i = plasmaProjectiles.iterator();
+		while (i.hasNext())
 		{
-			if (bullet.collidedWithPlayer)
+			PlasmaBullet tmp = i.next();
+			if (tmp.collidedWithPlayer)
 				player.damagePlayer();
-			if (bullet.remove)
+			if (tmp.remove)
 			{
-				collisionWorld.removeCollisionObject(bullet.getGameObject().body);
-				this.plasmaProjectiles.removeValue(bullet, true);
+				System.out.println("elite : before remove : " + this.plasmaProjectiles.size);
+				collisionWorld.removeCollisionObject(tmp.getGameObject().body);
+				i.remove();
+				
+				System.out.println("elite : after remove : " + this.plasmaProjectiles.size);
 			}
 			else
-				bullet.update();
+				tmp.update();
 		}
 		this.updateCollider();
 	}
@@ -184,6 +190,11 @@ public class Elite extends Enemy {
 	}
 	
 	@Override
+	public void initFlinchDecal() {
+	
+	}
+	
+	@Override
 	public void dispose()
 	{
 		super.dispose();
@@ -210,6 +221,15 @@ public class Elite extends Enemy {
 	@Override
 	public void move() {
 	
+	}
+	
+	@Override
+	public void removeBullet(btCollisionObject btCollisionObject) {
+		for (PlasmaBullet plasmaBullet : plasmaProjectiles)
+		{
+			if (plasmaBullet.getBtCollisionObject() == btCollisionObject)
+				plasmaBullet.remove = true;
+		}
 	}
 	
 	public void shoot() {

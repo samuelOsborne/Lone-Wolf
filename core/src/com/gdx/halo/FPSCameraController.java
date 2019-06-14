@@ -238,7 +238,7 @@ public class FPSCameraController extends InputAdapter {
 		gameObject.body.setWorldTransform(gameObject.transform);
 		gameObject.body.setCollisionFlags(gameObject.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
 		//gameObject.body.setCollisionFlags(Halo.PLAYER_FLAG);
-		gameObject.body.setUserValue(Halo.USER_USER_VALUE);
+		gameObject.body.setUserValue(Halo.PLAYER_USER_VALUE);
 	}
 	
 	public void updateCollider()

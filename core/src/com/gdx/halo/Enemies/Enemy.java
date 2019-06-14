@@ -4,10 +4,12 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.utils.Disposable;
 import com.gdx.halo.AnimatedDecal;
 import com.gdx.halo.GameObject;
@@ -18,6 +20,7 @@ public abstract class Enemy implements Disposable {
 		WALKING,
 		FIRING,
 		RELOADING,
+		FLINCH,
 		DEAD
 	}
 	
@@ -34,6 +37,7 @@ public abstract class Enemy implements Disposable {
 	protected AnimatedDecal                 deathDecal;
 	protected AnimatedDecal                 reloadingDecal;
 	protected AnimatedDecal                 idleDecal;
+	protected Decal                         flinchDecal;
 	
 	
 	/**
@@ -60,7 +64,7 @@ public abstract class Enemy implements Disposable {
 		this.modelBuilder = new ModelBuilder();
 	}
 	
-	protected AnimatedDecal currentDecal(){
+	protected Decal currentDecal(){
 		switch (state)
 		{
 			case IDLE:
@@ -73,6 +77,8 @@ public abstract class Enemy implements Disposable {
 				return (this.reloadingDecal);
 			case DEAD:
 				return (this.deathDecal);
+			case FLINCH:
+				return (this.flinchDecal);
 		}
 		return (null);
 	}
@@ -88,6 +94,8 @@ public abstract class Enemy implements Disposable {
 	public abstract void initIdleAnimation();
 	
 	public abstract void initReloadAnimation();
+	
+	public abstract void initFlinchDecal();
 	
 	public abstract void initCollider();
 	
@@ -118,6 +126,13 @@ public abstract class Enemy implements Disposable {
 	public void setReloadingAnimation(Animation<TextureRegion> reloadingAnimation) {
 		this.reloadingAnimation = reloadingAnimation;
 	}
+	
+	public btCollisionObject getCollisionObject()
+	{
+		return gameObject.getBtCollisionObject();
+	}
+	
+	public abstract void removeBullet(btCollisionObject btCollisionObject);
 	
 	public Animation<TextureRegion> getIdleAnimation() {
 		return idleAnimation;
@@ -192,4 +207,6 @@ public abstract class Enemy implements Disposable {
 	public void takeDamage(int dmg) {
 		this.health -= dmg;
 	}
+	
+	public abstract void shoot();
 }

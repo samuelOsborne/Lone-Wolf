@@ -41,4 +41,6 @@ public class GameObject extends ModelInstance implements Disposable {
 			shape.dispose();
 		}
 	}
+	
+	public btCollisionObject getBtCollisionObject() { return this.body; }
 }
