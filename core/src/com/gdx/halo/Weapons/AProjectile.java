@@ -46,7 +46,7 @@ public abstract class AProjectile implements Disposable {
 		if (this.stateTime >= 5)
 			this.remove = true;
 		this.projectileDecal.setPosition(this.projectileDecal.getPosition().x + (directionToPlayer.x * velocity),
-				0,
+				this.projectileDecal.getY(),
 				this.projectileDecal.getPosition().z + (directionToPlayer.z * velocity));
 		this.updateCollider();
 	}

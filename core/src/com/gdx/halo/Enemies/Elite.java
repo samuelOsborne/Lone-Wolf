@@ -1,11 +1,14 @@
 package com.gdx.halo.Enemies;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
@@ -32,6 +35,15 @@ public class Elite extends Enemy {
 	private Player              player;
 	private btCollisionWorld    collisionWorld;
 	private float               deathTimer = 0f;
+	private boolean             flinching = false;
+	private float               resetAnimationTimer;
+	
+	/**
+	 * Sounds
+	 */
+	private Array<Sound>        hitSounds;
+	private Array<Sound>        deathSounds;
+	private boolean             playingSound = false;
 	
 	public Elite()
 	{
@@ -59,7 +71,109 @@ public class Elite extends Enemy {
 		this.initWalkAnimation();
 		this.initFlinchDecal();
 		this.initCollider();
+		this.hitSounds = new Array<Sound>();
+		this.deathSounds = new Array<Sound>();
+		this.initSounds();
 	}
+	
+	private void initSounds()
+	{
+		String[] paths = {"Sounds/Enemies/Elite/Flinch/berserk.1.ogg",
+				"Sounds/Enemies/Elite/Flinch/berserk.4.ogg",
+				"Sounds/Enemies/Elite/Flinch/hurtenemy.1.ogg",
+				"Sounds/Enemies/Elite/Flinch/hurtenemy.2.ogg",
+				"Sounds/Enemies/Elite/Flinch/hurtenemy.3.ogg",
+				"Sounds/Enemies/Elite/Flinch/hurtenemy.4.ogg",
+				"Sounds/Enemies/Elite/Flinch/hurtenemy.5.ogg",
+				"Sounds/Enemies/Elite/Flinch/hurtenemy.6.ogg",
+				"Sounds/Enemies/Elite/Flinch/hurtenemymelee.3.ogg",
+				"Sounds/Enemies/Elite/Flinch/hurtenemymelee.4.ogg",
+				"Sounds/Enemies/Elite/Flinch/hurtfriend.1.ogg",
+				"Sounds/Enemies/Elite/Flinch/hurtfriend.3.ogg",
+				"Sounds/Enemies/Elite/Flinch/hurtfriend.7.ogg",
+				"Sounds/Enemies/Elite/Flinch/painminor.oof01.ogg",
+				"Sounds/Enemies/Elite/Flinch/painminor.oof02.ogg",
+				"Sounds/Enemies/Elite/Flinch/painminor.oof_a.ogg",
+				"Sounds/Enemies/Elite/Flinch/painminor.short01.ogg",
+				"Sounds/Enemies/Elite/Flinch/painminor.short02.ogg",
+				"Sounds/Enemies/Elite/Flinch/painminor.short03.ogg",
+				"Sounds/Enemies/Elite/Flinch/painminor.short_a.ogg",
+				"Sounds/Enemies/Elite/Flinch/painminor.short_b.ogg",
+				"Sounds/Enemies/Elite/Flinch/painminor.short_c.ogg",
+				"Sounds/Enemies/Elite/Flinch/painminor.short_d.ogg"};
+		
+		String[] deathPaths = {
+				"Sounds/Enemies/Elite/Death/deathflying.die01.ogg",
+				"Sounds/Enemies/Elite/Death/deathflying.die02.ogg",
+				"Sounds/Enemies/Elite/Death/deathquiet.short01.ogg",
+				"Sounds/Enemies/Elite/Death/deathquiet.short02.ogg",
+				"Sounds/Enemies/Elite/Death/deathquiet.short03.ogg",
+				"Sounds/Enemies/Elite/Death/deathquiet.short_a.ogg",
+				"Sounds/Enemies/Elite/Death/deathviolent.die01.ogg",
+				"Sounds/Enemies/Elite/Death/deathviolent.die02.ogg",
+				"Sounds/Enemies/Elite/Death/deathviolent.die04.ogg",
+				"Sounds/Enemies/Elite/Death/deathviolent.die08.ogg",
+				"Sounds/Enemies/Elite/Death/deathviolent.die09.ogg",
+				"Sounds/Enemies/Elite/Death/deathviolent.die10.ogg",
+				"Sounds/Enemies/Elite/Death/deathviolent.die11.ogg",
+				"Sounds/Enemies/Elite/Death/deathviolent.long01.ogg",
+				"Sounds/Enemies/Elite/Death/deathviolent.long02.ogg",
+				"Sounds/Enemies/Elite/Death/deathviolent.long03.ogg",
+				"Sounds/Enemies/Elite/Death/deathviolent.long04.ogg",
+				"Sounds/Enemies/Elite/Death/deathviolent.long_a.ogg",
+				"Sounds/Enemies/Elite/Death/deathviolent.long_b.ogg",
+				"Sounds/Enemies/Elite/Death/painfalling.die04.ogg",
+				"Sounds/Enemies/Elite/Death/painfalling.die05.ogg",
+				"Sounds/Enemies/Elite/Death/painfalling.die06.ogg",
+				"Sounds/Enemies/Elite/Death/painfalling.huh_a.ogg",
+				"Sounds/Enemies/Elite/Death/painfalling.huh_b.ogg",
+				"Sounds/Enemies/Elite/Death/painfalling.oof01.ogg",
+				"Sounds/Enemies/Elite/Death/painfalling.oof02.ogg",
+				"Sounds/Enemies/Elite/Death/painfalling.short01.ogg",
+				"Sounds/Enemies/Elite/Death/painfalling.short02.ogg",
+				"Sounds/Enemies/Elite/Death/painfalling.short03.ogg",
+				"Sounds/Enemies/Elite/Death/painmajor.die03.ogg",
+				"Sounds/Enemies/Elite/Death/painmajor.die05.ogg",
+				"Sounds/Enemies/Elite/Death/painmajor.die06.ogg",
+				"Sounds/Enemies/Elite/Death/painmajor.die07.ogg",
+				"Sounds/Enemies/Elite/Death/painmajor.die08.ogg",
+				"Sounds/Enemies/Elite/Death/painmajor.die09.ogg",
+				"Sounds/Enemies/Elite/Death/painmajor.die10.ogg",
+				"Sounds/Enemies/Elite/Death/painmajor.die11.ogg",
+				"Sounds/Enemies/Elite/Death/painmajor.die12.ogg",
+				"Sounds/Enemies/Elite/Death/painmajor.die13.ogg",
+				"Sounds/Enemies/Elite/Death/painmajor.die_a.ogg",
+				"Sounds/Enemies/Elite/Death/painmajor.die_b.ogg",
+				"Sounds/Enemies/Elite/Death/painmajor.oof01.ogg",
+				"Sounds/Enemies/Elite/Death/painmajor.oof02.ogg",
+				"Sounds/Enemies/Elite/Death/painminor.die03.ogg",
+				"Sounds/Enemies/Elite/Death/painminor.die05.ogg",
+				"Sounds/Enemies/Elite/Death/painminor.die06.ogg",
+				"Sounds/Enemies/Elite/Death/painminor.die07.ogg",
+				"Sounds/Enemies/Elite/Death/painminor.die08.ogg",
+				"Sounds/Enemies/Elite/Death/painminor.huh_a.ogg",
+				"Sounds/Enemies/Elite/Death/screampain.die01.ogg",
+				"Sounds/Enemies/Elite/Death/screampain.die02.ogg",
+				"Sounds/Enemies/Elite/Death/screampain.die06.ogg",
+				"Sounds/Enemies/Elite/Death/screampain.die07.ogg",
+				"Sounds/Enemies/Elite/Death/screampain.die08.ogg",
+				"Sounds/Enemies/Elite/Death/screampain.die11.ogg",
+				"Sounds/Enemies/Elite/Death/screampain.die12.ogg",
+				"Sounds/Enemies/Elite/Death/screampain.long01.ogg",
+				"Sounds/Enemies/Elite/Death/screampain.long02.ogg",
+				"Sounds/Enemies/Elite/Death/screampain.long_a.ogg",
+				"Sounds/Enemies/Elite/Death/screampain.long_b.ogg"};
+		
+		for (int i = 0; i < 23; i++)
+		{
+			this.hitSounds.add(Gdx.audio.newSound(Gdx.files.internal(paths[i])));
+		}
+		for (int i = 0; i < 60; i++)
+		{
+			this.deathSounds.add(Gdx.audio.newSound(Gdx.files.internal(deathPaths[i])));
+		}
+	}
+	
 	
 	@Override
 	public void update(){
@@ -71,12 +185,37 @@ public class Elite extends Enemy {
 			collisionWorld.removeCollisionObject(this.gameObject.body);
 			if (deathTimer >= 5)
 				remove = true;
+			if (!playingSound)
+			{
+				this.deathSounds.get((int )(Math.random() * 60)).play();
+				playingSound = true;
+			}
+			if (deathTimer >= 5)
+				remove = true;
 		}
 		else {
 			//After x amount of seconds fire again
 			this.shoot();
 			this.move();
 		}
+		
+		if (flinching && state != State.DEAD)
+		{
+			resetAnimationTimer += Gdx.graphics.getDeltaTime();
+			if (!playingSound)
+			{
+				this.hitSounds.get((int )(Math.random() * 23)).play();
+				playingSound = true;
+			}
+			if (resetAnimationTimer >= 0.2f)
+			{
+				flinching = false;
+				resetAnimationTimer = 0;
+				this.state = State.FIRING;
+				playingSound = false;
+			}
+		}
+		
 		Iterator<PlasmaBullet> i = plasmaProjectiles.iterator();
 		while (i.hasNext())
 		{
@@ -85,11 +224,8 @@ public class Elite extends Enemy {
 				player.damagePlayer();
 			if (tmp.remove)
 			{
-				System.out.println("elite : before remove : " + this.plasmaProjectiles.size);
 				collisionWorld.removeCollisionObject(tmp.getGameObject().body);
 				i.remove();
-				
-				System.out.println("elite : after remove : " + this.plasmaProjectiles.size);
 			}
 			else
 				tmp.update();
@@ -126,6 +262,12 @@ public class Elite extends Enemy {
 				this.reloadingDecal.setPosition(position);
 				this.reloadingDecal.lookAt(camera.position, camera.up);
 				decalBatch.add(this.reloadingDecal);
+				break;
+			case FLINCH:
+				this.flinchDecal.setPosition(position);
+				this.flinchDecal.lookAt(camera.position, camera.up);
+				decalBatch.add(this.flinchDecal);
+				this.flinching = true;
 				break;
 			case DEAD:
 				this.deathDecal.setPosition(position);
@@ -181,17 +323,22 @@ public class Elite extends Enemy {
 	
 	@Override
 	public void initIdleAnimation() {
-	
+		
 	}
 	
 	@Override
 	public void initReloadAnimation() {
-	
+		
 	}
 	
 	@Override
 	public void initFlinchDecal() {
-	
+		this.flinchDecal = Decal.newDecal(1f, 1f, new TextureRegion(new Texture(Gdx.files.internal("Animations/Enemies/Elite/flinch.png"))));
+		this.flinchDecal.setScaleX(scaleX);
+		this.flinchDecal.setScaleY(scaleY);
+		this.flinchDecal.setPosition(this.position);
+		this.flinchDecal.setBlending(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		stateTime = 0f;
 	}
 	
 	@Override
@@ -220,7 +367,7 @@ public class Elite extends Enemy {
 	
 	@Override
 	public void move() {
-	
+		
 	}
 	
 	@Override
@@ -232,6 +379,7 @@ public class Elite extends Enemy {
 		}
 	}
 	
+	@Override
 	public void shoot() {
 		if (stateTime >= 1.5f)
 		{
@@ -242,5 +390,13 @@ public class Elite extends Enemy {
 			this.collisionWorld.addCollisionObject(plasmaBullet.getGameObject().body, PLASMA_FLAG, PLAYER_FLAG | WALL_FLAG);
 			stateTime = 0;
 		}
+	}
+	
+	@Override
+	public void takeDamage(int dmg)
+	{
+		super.takeDamage(dmg);
+		if (this.state != State.DEAD)
+			this.state = State.FLINCH;
 	}
 }

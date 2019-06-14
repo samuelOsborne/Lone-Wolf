@@ -28,16 +28,23 @@ public class EnemyManager implements Disposable {
 	{
 		for (Enemy enemy : enemies)
 		{
-			enemy.update();
-			if (enemy.getRemove())
-				this.enemies.removeValue(enemy, true);
+			if (!enemy.remove)
+				enemy.update();
+//			if (enemy.getRemove())
+//				this.enemies.removeValue(enemy, true);
 		}
+	}
+	
+	public void emptyEnemyContainer()
+	{
+		this.enemies.clear();
 	}
 	
 	public void render()
 	{
 		for (Enemy e : enemies) {
-			e.render(decalBatch, camera);
+			if (!e.remove)
+				e.render(decalBatch, camera);
 		}
 		decalBatch.flush();
 	}

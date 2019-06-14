@@ -157,10 +157,8 @@ public class Grunt extends Enemy {
 				player.damagePlayer();
 			if (tmp.remove)
 			{
-				System.out.println("grunt : before remove : " + this.plasmaProjectiles.size);
 				collisionWorld.removeCollisionObject(tmp.getGameObject().body);
 				i.remove();
-				System.out.println("grunt : after remove : " + this.plasmaProjectiles.size);
 			}
 			else
 				tmp.update();
@@ -197,6 +195,7 @@ public class Grunt extends Enemy {
 				decalBatch.add(this.reloadingDecal);
 				break;
 			case FLINCH:
+				this.flinchDecal.setPosition(position);
 				this.flinchDecal.lookAt(camera.position, camera.up);
 				decalBatch.add(this.flinchDecal);
 				this.flinching = true;
@@ -277,7 +276,7 @@ public class Grunt extends Enemy {
 	public void initCollider() {
 		Model model = ColliderCreator.createCollider(this.firingDecal, "grunt");
 		
-		gameObject = new GameObject.Constructor(model, "grunt", new btBoxShape(new Vector3(1.5f, 2.5f, 0.5f))).construct();
+		gameObject = new GameObject.Constructor(model, "grunt", new btBoxShape(new Vector3(1f, 1f, 0.5f))).construct();
 		gameObject.body.setUserValue(Halo.GRUNT_USER_VALUE);
 		gameObject.body.setCollisionFlags(gameObject.body.getCollisionFlags() |
 				btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
@@ -310,7 +309,9 @@ public class Grunt extends Enemy {
 	public void shoot() {
 		if (stateTime >= 1.5f)
 		{
-			PlasmaBullet plasmaBullet = new PlasmaBullet(position,
+			Vector3 shootingPos = new Vector3(position);
+			//shootingPos.y -= 0.3f;
+			PlasmaBullet plasmaBullet = new PlasmaBullet(shootingPos,
 					this.gameObject.transform.getRotation(new Quaternion()),
 					new Vector3(player.getFpsCameraController().getPosition()));
 			this.plasmaProjectiles.add(plasmaBullet);
