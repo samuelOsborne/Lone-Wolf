@@ -1,6 +1,7 @@
 package com.gdx.halo.Weapons.Human;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -9,70 +10,77 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
+import com.badlogic.gdx.utils.Array;
 import com.gdx.halo.Weapons.AWeapon;
 
 import static com.badlogic.gdx.physics.bullet.collision.btCollisionObject.CollisionFlags.CF_CHARACTER_OBJECT;
 import static com.gdx.halo.Utils.RayTest.rayTest;
 
-public class Pistol extends AWeapon {
-	private float stateTime;
+public class Ma5b extends AWeapon {
+	private float stateTime = 0;
 	private boolean shooting = false;
 	private boolean reloading = false;
 	private boolean shootingSound = false;
 	private boolean reloadingSound = false;
 	private Ray shootRay;
+	private Array<Sound> shootingSounds;
 	
 	/**
 	 * Textures
 	 */
-	private Texture pistolTexture;
-	private Texture pistolBulletsTexture;
+	private Texture ma5bTexture;
+	private Texture ma5bBulletsTexture;
 	
 	
 	/**
 	 * Sounds
 	 */
-	private static String shootingSoundPath = "Sounds/Weapons/Pistol/pistol_shot.wav";
-	private static String reloadSoundPath = "Sounds/Weapons/Pistol/pistol_reload.mp3";
+	private static String firstShootingSoundPath = "Sounds/Weapons/MA5B/shot_1.wav";
+	private static String secondShootingSoundPath = "Sounds/Weapons/MA5B/shot_2.wav";
+	private static String reloadSoundPath = "Sounds/Weapons/MA5B/MA5B_reload.mp3";
 	
 	/**
 	 * Animations
 	 */
-	private static String shootingAnimationPath = "Animations/Weapons/Pistol/pistol_animation.png";
-	private static String reloadAnimationPath = "Animations/Weapons/Pistol/pistol_reload.png";
+	private static String shootingAnimationPath = "Animations/Weapons/MA5B/MA5B_animation.png";
+	private static String reloadAnimationPath = "Animations/Weapons/MA5B/MA5B_reload.png";
 	
 	/**
 	 * Sprites
 	 */
-	private static String reticulePath = "HUD/Weapons/Pistol/pistol_reticule.png";
-	private static String pistolTexturePath = "Animations/Weapons/Pistol/pistol_base.png";
-	private static String pistolBulletsPath = "HUD/Weapons/Pistol/single_pistol_bullet.png";
+	private static String reticulePath = "HUD/Weapons/MA5B/MA5B_reticule.png";
+	private static String ma5bTexturePath = "Animations/Weapons/MA5B/MA5B_base.png";
+	private static String ma5bBulletsPath = "HUD/Weapons/MA5B/MA5B_single_bullet.png";
 	
 	/**
 	 * Sizes and speeds
 	 */
-	private static float weaponWidth = 450f;
-	private static float weaponHeight = 450f;
-	private static float spacing = 200f;
+	private static float weaponWidth = 300f;
+	private static float weaponHeight = 250f;
+	private static float spacing = -10f;
 	private static float bulletDistance = 80f;
 	
-	
-	public Pistol() {
+	public Ma5b()
+	{
 		super.init();
-		this.weaponType = WeaponType.M40;
+		this.weaponType = WeaponType.MA5B;
 		this.shootRay = new Ray();
 		this.stateTime = 0f;
-		this.pistolTexture = new Texture(pistolTexturePath);
-		this.pistolBulletsTexture = new Texture(pistolBulletsPath);
-		this.setMagSize(12);
-		this.setBulletsLeft(12);
-		this.setFireAnimation(initaliseAnimation(shootingAnimationPath, this.getFireAnimation(), 3, 1, 0.15f));
-		this.setReloadAnimation(this.initaliseAnimation(reloadAnimationPath, this.getReloadAnimation(), 5, 1, 0.25f));
-		this.setShootingSound(Gdx.audio.newSound(Gdx.files.internal(shootingSoundPath)));
+		this.ma5bTexture = new Texture(ma5bTexturePath);
+		this.ma5bBulletsTexture = new Texture(ma5bBulletsPath);
+		this.setMagSize(60);
+		this.setBulletsLeft(60);
+		this.setFireAnimation(initaliseAnimation(shootingAnimationPath, this.getFireAnimation(), 2, 1, 0.05f));
+		this.setReloadAnimation(this.initaliseAnimation(reloadAnimationPath, this.getReloadAnimation(), 2, 2, 0.40f));
+		
+		this.shootingSounds = new Array<Sound>();
+		this.shootingSounds.add(Gdx.audio.newSound(Gdx.files.internal(firstShootingSoundPath)));
+		this.shootingSounds.add(Gdx.audio.newSound(Gdx.files.internal(secondShootingSoundPath)));
 		this.setReloadSound(Gdx.audio.newSound(Gdx.files.internal(reloadSoundPath)));
 		this.setReticule(new Texture(Gdx.files.internal(reticulePath)));
 	}
 	
+	@Override
 	public void render(SpriteBatch spriteBatch) {
 		spriteBatch.begin();
 		
@@ -85,10 +93,21 @@ public class Pistol extends AWeapon {
 		/**
 		 * Ammo
 		 */
+		int y = 15;
+		int a = 0;
+		int offset = 10;
 		for (int i = 0; i < this.getBulletsLeft(); i++)
 		{
-			spriteBatch.draw(this.pistolBulletsTexture, i * this.pistolBulletsTexture.getWidth() + 10,
-					Gdx.graphics.getHeight() - this.pistolBulletsTexture.getHeight() - 15);
+			if (i % 20 == 0)
+			{
+				y += 15;
+				offset -= 3;
+			}
+			if (a == 20)
+				a = 0;
+			spriteBatch.draw(this.ma5bBulletsTexture, a * this.ma5bBulletsTexture.getWidth() + offset,
+					Gdx.graphics.getHeight() - this.ma5bBulletsTexture.getHeight() - y);
+			a++;
 		}
 		spriteBatch.setColor(Color.WHITE);
 		
@@ -104,7 +123,7 @@ public class Pistol extends AWeapon {
 				spriteBatch.draw(currentFrame, Gdx.graphics.getWidth() / 2f - spacing, 0, weaponWidth, weaponHeight);
 				if (!this.shootingSound)
 				{
-					this.getShootingSound().play(0.10f);
+					this.shootingSounds.get((int )(Math.random() * 2)).play();
 					this.shootingSound = true;
 				}
 			}
@@ -125,7 +144,7 @@ public class Pistol extends AWeapon {
 				}
 			}
 		} else {
-			spriteBatch.draw(pistolTexture, Gdx.graphics.getWidth() / 2f - spacing, 0, weaponWidth, weaponHeight);
+			spriteBatch.draw(ma5bTexture, Gdx.graphics.getWidth() / 2f - spacing, 0, weaponWidth, weaponHeight);
 			if (this.shooting && this.getBulletsLeft() == 0)
 				this.flashReloadIcon(spriteBatch);
 			shooting = false;
@@ -166,11 +185,11 @@ public class Pistol extends AWeapon {
 	
 	@Override
 	public void update() {
+	
 	}
 	
 	@Override
 	public void dispose() {
-		//spriteBatch.dispose();
 		this.getShootingSound().dispose();
 	}
 }

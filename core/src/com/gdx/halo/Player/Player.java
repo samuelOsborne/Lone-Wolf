@@ -6,7 +6,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.gdx.halo.FPSCameraController;
 import com.gdx.halo.Halo;
 import com.gdx.halo.Weapons.AWeapon;
-import com.gdx.halo.Weapons.Human.Pistol;
+import com.gdx.halo.Weapons.Human.Ma5b;
 
 public class Player implements Disposable {
 	private PlayerHUD           playerHUD;
@@ -28,7 +28,8 @@ public class Player implements Disposable {
 		collisionWorld = _collisionWorld;
 		this.fpsCameraController = new FPSCameraController(_camera, _collisionWorld, this);
 		this.playerHUD = new PlayerHUD(camera, this);
-		this.currentWeapon = new Pistol();
+//		this.currentWeapon = new Pistol();
+		this.currentWeapon = new Ma5b();
 		this.playerHUD.setWeapon(currentWeapon);
 	}
 	
@@ -76,6 +77,7 @@ public class Player implements Disposable {
 					this.gameInstance.damageEnemy(enemyIndex, 25);
 					break;
 				case MA5B:
+					this.gameInstance.damageEnemy(enemyIndex, 15);
 					break;
 				case SHOTGUN:
 					break;
