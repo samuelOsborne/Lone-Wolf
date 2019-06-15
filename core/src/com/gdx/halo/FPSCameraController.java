@@ -21,7 +21,6 @@ import com.badlogic.gdx.utils.IntIntMap;
 import com.gdx.halo.Player.Player;
 
 import static com.badlogic.gdx.physics.bullet.collision.btCollisionObject.CollisionFlags.CF_STATIC_OBJECT;
-import static com.gdx.halo.Halo.WALL_FLAG;
 import static com.gdx.halo.Utils.RayTest.rayTest;
 
 public class FPSCameraController extends InputAdapter {

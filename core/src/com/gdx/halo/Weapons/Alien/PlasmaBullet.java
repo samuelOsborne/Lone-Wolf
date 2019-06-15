@@ -37,6 +37,7 @@ public class PlasmaBullet extends AProjectile {
 //		this.myContactListener = new MyContactListener();
 		this.projectileDecal.setScale(0.2f, 0.2f);
 		this.projectileDecal.setRotation(rotation);
+		this.initCollider();
 	}
 	
 	@Override

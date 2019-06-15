@@ -1,7 +1,9 @@
 package com.gdx.halo;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Vector3;
@@ -17,8 +19,10 @@ import com.gdx.halo.Player.Player;
 import com.gdx.halo.Utils.MapReader;
 import com.gdx.halo.Utils.UtilsContactListener;
 
-public class Halo extends ApplicationAdapter {
+public class Halo implements Screen {
 	private PerspectiveCamera camera;
+	private Game game;
+	private MenuManager menuManager;
 	
 	/**
 	 * User values
@@ -65,6 +69,13 @@ public class Halo extends ApplicationAdapter {
 	 */
 	private MapReader mapReader;
 	
+	public Halo(MenuManager menuManager)
+	{
+		this.create();
+		this.menuManager = menuManager;
+		//menuManager.changeScreen(this);
+	}
+	
 	private void CreateModels() {
 		enemyManager = new EnemyManager(camera, collisionWorld);
 		
@@ -92,7 +103,7 @@ public class Halo extends ApplicationAdapter {
 		decalManager = new DecalManager(camera);
 	}
 	
-	@Override
+	//@Override
 	public void create () {
 		Bullet.init();
 		camera = createCam(640, 480);
@@ -146,7 +157,8 @@ public class Halo extends ApplicationAdapter {
 	}
 	
 	@Override
-	public void render () {
+	public void render (float delta) {
+		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		
@@ -190,6 +202,16 @@ public class Halo extends ApplicationAdapter {
 	
 	@Override
 	public void resume () {
+	}
+	
+	@Override
+	public void hide() {
+	
+	}
+	
+	@Override
+	public void show() {
+	
 	}
 	
 	@Override

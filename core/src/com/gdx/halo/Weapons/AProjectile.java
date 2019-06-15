@@ -34,7 +34,6 @@ public abstract class AProjectile implements Disposable {
 		this.projectileDecal = Decal.newDecal(new TextureRegion(this.projectileTexture));
 		this.projectileDecal.setPosition(startPos);
 		directionToPlayer = this.direction.sub(this.projectileDecal.getPosition()).nor();
-		this.initCollider();
 	}
 	
 	public abstract void initCollider();
