@@ -1,9 +1,13 @@
 package com.gdx.halo.Utils;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.gdx.halo.DecalManager;
+import com.gdx.halo.Enemies.Elite;
+import com.gdx.halo.Enemies.Grunt;
+import com.gdx.halo.Halo;
 import com.gdx.halo.Map.Floor;
 import com.gdx.halo.Map.Wall;
 
@@ -13,13 +17,50 @@ import java.io.FileReader;
 import static com.gdx.halo.Halo.WALL_FLAG;
 
 public class MapReader {
-	public FileHandle mapFile;
+	public FileHandle           mapFile;
+	private Halo                gameManager;
+	private btCollisionWorld    collisionWorld;
+	private DecalManager        decalManager;
 	
-	public MapReader(FileHandle fileHandle) {
+	public MapReader(FileHandle fileHandle, Halo gameManager, btCollisionWorld collisionWorld, DecalManager decalManager) {
 		this.mapFile = fileHandle;
+		this.gameManager = gameManager;
+		this.collisionWorld = collisionWorld;
+		this.decalManager = decalManager;
 	}
 	
-	public void createMap(DecalManager decalManager, btCollisionWorld collisionWorld) throws Exception
+	public void loadEnemies(FileHandle fileHandle) throws Exception
+	{
+		float x = 0;
+		float z = 0;
+		
+		if (fileHandle == null)
+			throw new Exception("Map file path is null!");
+		BufferedReader br = new BufferedReader(new FileReader(fileHandle.file()));
+		
+		String st;
+		while ((st = br.readLine()) != null)
+		{
+			for (int i = 0; i < st.length(); i++)
+			{
+				if (st.charAt(i) == 'g')
+				{
+					Grunt grunt = new Grunt(new Vector3(x, 0, z), gameManager.getPlayer(), collisionWorld);
+					gameManager.getEnemyManager().addEnemy(grunt);
+				}
+				else if (st.charAt(i) == 'e')
+				{
+					Elite elite = new Elite(new Vector3(x, 0, z), gameManager.getPlayer(), collisionWorld);
+					gameManager.getEnemyManager().addEnemy(elite);
+				}
+				x += 5;
+			}
+			z += 5;
+			x = 0;
+		}
+	}
+	
+	public void createMap() throws Exception
 	{
 		float x = 0;
 		float z = 0;
@@ -35,23 +76,23 @@ public class MapReader {
 			{
 				if (st.charAt(i) == 'x')
 				{
-					Floor floor = new Floor(5 ,5, new Vector3(x, -5, z),"walls/stone_wall_01.png");
-					
-					decalManager.addFloor(floor);
-
-
 					Wall wall = new Wall(5 ,5, new Vector3(x, 0, z),"walls/stone_wall_02.png");
 					
 					decalManager.addWall(wall);
 					collisionWorld.addCollisionObject(wall.getGameObject().body, WALL_FLAG);
 				}
-				else if (st.charAt(i) == '0')
+				else if (st.charAt(i) == 'g')
 				{
-					Floor floor = new Floor(5 ,5, new Vector3(x, -5, z),"walls/stone_wall_01.png");
-					
-					decalManager.addFloor(floor);
-					//collisionWorld.addCollisionObject(wall.getGameObject().body);
+					Grunt grunt = new Grunt(new Vector3(x, 0, z), gameManager.getPlayer(), collisionWorld);
+					gameManager.getEnemyManager().addEnemy(grunt);
 				}
+				else if (st.charAt(i) == 'e')
+				{
+					Elite elite = new Elite(new Vector3(x, 0, z), gameManager.getPlayer(), collisionWorld);
+					gameManager.getEnemyManager().addEnemy(elite);
+				}
+				Floor floor = new Floor(5 ,5, new Vector3(x, -5, z),"walls/stone_wall_01.png");
+				decalManager.addFloor(floor);
 				x += 5;
 			}
 			z += 5;

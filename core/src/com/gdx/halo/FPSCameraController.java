@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.attributes.PointLightsAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
@@ -143,6 +142,9 @@ public class FPSCameraController extends InputAdapter {
 	}
 	
 	public void update (float deltaTime) {
+//		System.out.println("player pos : " + this.camera.position);
+//		System.out.println("player direction : " + this.camera.direction);
+		
 		if (keys.containsKey(FORWARD)) {
 			fwdRay.set(camera.position, forward);
 			fwdRay2.set(camera.position, camera.direction);

@@ -32,6 +32,10 @@ public class UtilsContactListener extends ContactListener {
 		{
 			gameManager.setWallCollide(userValue0.getUserValue(), userValue1.getUserValue(), true);
 		}
+		if (userValue0.getUserValue() == Halo.WALL_USER_VALUE && userValue1.getContactCallbackFlag() == Halo.ENEMY_FLAG)
+		{
+			gameManager.setWallCollide(userValue0.getUserValue(), userValue1.getUserValue(), true);
+		}
 		return true;
 	}
 }

@@ -69,7 +69,7 @@ public class Elite extends Enemy {
 		this.state = State.WALKING;
 		this.scaleX = 3f;
 		this.scaleY = 5f;
-		this.health = 100;
+		this.health = 150;
 		this.position = position;
 		this.initDeathAnimation();
 		this.initFireAnimation();
@@ -367,7 +367,8 @@ public class Elite extends Enemy {
 		//gameObject.body.setCollisionFlags(CF_CHARACTER_OBJECT);
 		gameObject.transform.set(this.firingDecal.getPosition(), this.gameObject.transform.getRotation(new Quaternion()));
 		gameObject.body.setWorldTransform(gameObject.transform);
-		//collisionWorld.addCollisionObject(this.gameObject.body, ENEMY_FLAG);
+		gameObject.body.setContactCallbackFlag(ENEMY_FLAG);
+		collisionWorld.addCollisionObject(this.gameObject.body, ENEMY_FLAG);
 	}
 	
 	@Override

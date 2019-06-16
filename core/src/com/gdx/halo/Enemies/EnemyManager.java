@@ -15,6 +15,7 @@ public class EnemyManager implements Disposable {
 	private DecalBatch          decalBatch;
 	private Camera              camera;
 	private btCollisionWorld    collisionWorld;
+	public boolean              allEnemiesDead = false;
 	
 	public EnemyManager(Camera _camera, btCollisionWorld _collisionWorld)
 	{
@@ -28,8 +29,12 @@ public class EnemyManager implements Disposable {
 	{
 		for (Enemy enemy : enemies)
 		{
+			allEnemiesDead = true;
 			if (!enemy.remove)
+			{
 				enemy.update();
+				allEnemiesDead = false;
+			}
 //			if (enemy.getRemove())
 //				this.enemies.removeValue(enemy, true);
 		}

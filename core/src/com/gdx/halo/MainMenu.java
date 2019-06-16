@@ -14,7 +14,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.IntIntMap;
 
 public class MainMenu extends InputAdapter implements Screen {
-	private final MenuManager   game;
+	private MenuManager   game;
 	
 	/**
 	 * Main menu music
@@ -47,7 +47,7 @@ public class MainMenu extends InputAdapter implements Screen {
 	private int ENTER = Input.Keys.ENTER;
 	private int pos = 0;
 	
-	public MainMenu(final MenuManager game) {
+	public MainMenu(MenuManager game) {
 		this.camera = createCam(640, 480);
 		this.game = game;
 		this.initSprites();

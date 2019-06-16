@@ -297,6 +297,8 @@ public class Grunt extends Enemy {
 				btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
 		gameObject.transform.set(this.firingDecal.getPosition(), this.gameObject.transform.getRotation(new Quaternion()));
 		gameObject.body.setWorldTransform(gameObject.transform);
+		gameObject.body.setContactCallbackFlag(ENEMY_FLAG);
+		collisionWorld.addCollisionObject(this.gameObject.body, ENEMY_FLAG);
 	}
 	
 	@Override
@@ -307,6 +309,11 @@ public class Grunt extends Enemy {
 	
 	@Override
 	public void move() {
+		if (this.getEliteCollide())
+		{
+			this.eliteCollide = false;
+			return ;
+		}
 		if (this.getWallCollide())
 		{
 			this.position.z -= 1f;
