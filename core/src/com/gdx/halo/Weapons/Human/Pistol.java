@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
+import com.gdx.halo.Halo;
 import com.gdx.halo.Weapons.AWeapon;
 
 import static com.badlogic.gdx.physics.bullet.collision.btCollisionObject.CollisionFlags.CF_CHARACTER_OBJECT;
@@ -149,7 +150,7 @@ public class Pistol extends AWeapon {
 				shootRay.set(camera.position, camera.direction);
 				if ((collidedObj = rayTest(collisionWorld,
 						shootRay,
-						bulletDistance, CF_CHARACTER_OBJECT)) != null)
+						bulletDistance, Halo.ENEMY_FLAG)) != null)
 				{
 					return (collidedObj.getUserValue());
 				}

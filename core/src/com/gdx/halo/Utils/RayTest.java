@@ -21,7 +21,7 @@ public class RayTest {
 		rayToWorld.set(rayTo.x, rayTo.y, rayTo.z);
 		collisionWorld.rayTest(rayFrom, rayTo, callback);
 		if (callback.hasHit()) {
-			if (callback.getCollisionObject().getCollisionFlags() == flagToCheck)
+			if (callback.getCollisionObject().getContactCallbackFlag() == flagToCheck)
 				return callback.getCollisionObject();
 		}
 		return null;
@@ -39,7 +39,7 @@ public class RayTest {
 		rayToWorld.set(rayTo.x, rayTo.y, rayTo.z);
 		collisionWorld.rayTest(rayFrom, rayTo, callback);
 		if (callback.hasHit()) {
-			if (callback.getCollisionObject().getCollisionFlags() == flagToCheck)
+			if (callback.getCollisionObject().getContactCallbackFlag() == flagToCheck)
 				return callback.getCollisionObject();
 		}
 		return null;

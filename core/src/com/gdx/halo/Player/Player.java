@@ -7,6 +7,7 @@ import com.gdx.halo.FPSCameraController;
 import com.gdx.halo.Halo;
 import com.gdx.halo.Weapons.AWeapon;
 import com.gdx.halo.Weapons.Human.Ma5b;
+import com.gdx.halo.Weapons.Human.Pistol;
 
 public class Player implements Disposable {
 	private PlayerHUD           playerHUD;
@@ -28,8 +29,8 @@ public class Player implements Disposable {
 		collisionWorld = _collisionWorld;
 		this.fpsCameraController = new FPSCameraController(_camera, _collisionWorld, this);
 		this.playerHUD = new PlayerHUD(camera, this);
-//		this.currentWeapon = new Pistol();
-		this.currentWeapon = new Ma5b();
+		this.currentWeapon = new Pistol();
+		//this.currentWeapon = new Ma5b();
 		this.playerHUD.setWeapon(currentWeapon);
 	}
 	

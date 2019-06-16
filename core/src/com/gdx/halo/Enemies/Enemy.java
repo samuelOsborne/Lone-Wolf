@@ -46,6 +46,8 @@ public abstract class Enemy implements Disposable {
 	protected ModelBuilder                  modelBuilder;
 	protected Model                         wireFrameCubeModel;
 	protected ModelInstance                 wireFrameModelInstance;
+	protected boolean                       wallCollide = false;
+	protected boolean                       eliteCollide = false;
 	
 	/**
 	 * Enemy information
@@ -209,4 +211,12 @@ public abstract class Enemy implements Disposable {
 	}
 	
 	public abstract void shoot();
+	
+	public void setWallCollide(boolean collide) { this.wallCollide = collide; }
+	
+	public boolean getWallCollide() { return this.wallCollide; }
+	
+	public void setEliteCollide(boolean collide) { this.eliteCollide = collide; }
+	
+	public boolean getEliteCollide() { return this.eliteCollide; }
 }

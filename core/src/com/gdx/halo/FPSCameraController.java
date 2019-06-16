@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.PointLightsAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
@@ -237,6 +238,7 @@ public class FPSCameraController extends InputAdapter {
 		gameObject.body.setWorldTransform(gameObject.transform);
 		gameObject.body.setCollisionFlags(gameObject.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
 		//gameObject.body.setCollisionFlags(Halo.PLAYER_FLAG);
+		gameObject.body.setContactCallbackFlag(Halo.PLAYER_FLAG);
 		gameObject.body.setUserValue(Halo.PLAYER_USER_VALUE);
 	}
 	

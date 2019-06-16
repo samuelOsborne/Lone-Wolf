@@ -26,8 +26,6 @@ import com.gdx.halo.Utils.ColliderCreator;
 import com.gdx.halo.Weapons.Alien.PlasmaBullet;
 
 import java.util.Iterator;
-
-import static com.badlogic.gdx.physics.bullet.collision.btCollisionObject.CollisionFlags.CF_CHARACTER_OBJECT;
 import static com.gdx.halo.Halo.*;
 
 public class Grunt extends Enemy {
@@ -39,6 +37,15 @@ public class Grunt extends Enemy {
 	private Color               pinkPlasma;
 	private boolean             flinching = false;
 	private float               resetAnimationTimer;
+	
+	/**
+	 * Movement
+	 */
+	private Vector3             directionToPlayer;
+	private float               velocity;
+	private Vector3             direction;
+	private float               moveTimer = 0f;
+	
 	
 	/**
 	 * Sounds
@@ -78,6 +85,9 @@ public class Grunt extends Enemy {
 		this.hitSounds = new Array<Sound>();
 		this.deathSounds = new Array<Sound>();
 		this.initSounds();
+		this.velocity = 0.01f;
+		this.direction = new Vector3(player.getFpsCameraController().getPosition());
+		this.directionToPlayer = this.direction.sub(this.currentDecal().getPosition().nor());
 	}
 	
 	private void initSounds()
@@ -99,7 +109,6 @@ public class Grunt extends Enemy {
 				"Sounds/Enemies/Grunt/Death/pain_body_major.4.ogg",
 				"Sounds/Enemies/Grunt/Death/pain_body_major.5.ogg",
 				"Sounds/Enemies/Grunt/Death/pain_body_major.6.ogg"};
-		
 		
 		for (int i = 0; i < 7; i++)
 		{
@@ -130,7 +139,13 @@ public class Grunt extends Enemy {
 		else {
 			//After x amount of seconds fire again
 			this.shoot();
-			this.move();
+			moveTimer += Gdx.graphics.getDeltaTime();
+			if (moveTimer >= 5)
+			{
+				this.move();
+				if (moveTimer == 10)
+					moveTimer = 0;
+			}
 		}
 		if (flinching && state != State.DEAD)
 		{
@@ -211,7 +226,7 @@ public class Grunt extends Enemy {
 	public void initFireAnimation() {
 		Texture shootSheet = new Texture(Gdx.files.internal("Animations/Enemies/Grunt/shooting.png"));
 		TextureRegion[] walkFrames = AnimationLoader.loadAnimation(shootSheet, 2, 1);
-		fireAnimation = new Animation<TextureRegion>(0.25f, walkFrames);
+		fireAnimation = new Animation<TextureRegion>(0.70f, walkFrames);
 		fireAnimation.setPlayMode(Animation.PlayMode.LOOP);
 		firingDecal = AnimatedDecal.newAnimatedDecal(1f, 1f, fireAnimation, true);
 		firingDecal.setKeepSize(true);
@@ -280,7 +295,6 @@ public class Grunt extends Enemy {
 		gameObject.body.setUserValue(Halo.GRUNT_USER_VALUE);
 		gameObject.body.setCollisionFlags(gameObject.body.getCollisionFlags() |
 				btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
-		gameObject.body.setCollisionFlags(CF_CHARACTER_OBJECT);
 		gameObject.transform.set(this.firingDecal.getPosition(), this.gameObject.transform.getRotation(new Quaternion()));
 		gameObject.body.setWorldTransform(gameObject.transform);
 	}
@@ -293,7 +307,40 @@ public class Grunt extends Enemy {
 	
 	@Override
 	public void move() {
-	
+		if (this.getWallCollide())
+		{
+			this.position.z -= 1f;
+			this.wallCollide = false;
+			return ;
+		}
+		int xOffset = ((int )(Math.random() * 10));
+		int zOffset = ((int )(Math.random() * 10));
+		int dir = ((int )(Math.random() + 1));
+		
+		this.directionToPlayer = new Vector3(player.getFpsCameraController().getPosition());
+		double destX = this.directionToPlayer.x - xOffset * dir - this.currentDecal().getPosition().x;
+		double destZ = (this.directionToPlayer.z - zOffset * dir) - this.currentDecal().getPosition().z;
+		
+		double dist = Math.sqrt(destX * destX + destZ * destZ);
+//		destX = destX / dist;
+//		destZ = destZ / dist;
+		
+		double travelX = destX * velocity;
+		double travelZ = destZ * velocity;
+		
+		double distTravel = Math.sqrt(travelX * travelX + travelZ * travelZ);
+		
+		if ( distTravel > dist)
+		{
+			this.currentDecal().setPosition((float)destX, this.currentDecal().getY(), (float)destZ);
+		}
+		else
+		{
+			double tmpX = this.currentDecal().getX() + travelX;
+			double tmpZ = this.currentDecal().getZ() + travelZ;
+			this.currentDecal().setPosition((float)tmpX, this.currentDecal().getY(), (float)tmpZ);
+			this.position = this.currentDecal().getPosition();
+		}
 	}
 	
 	@Override

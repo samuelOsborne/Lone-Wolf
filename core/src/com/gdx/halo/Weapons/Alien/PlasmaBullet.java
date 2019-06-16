@@ -10,31 +10,15 @@ import com.gdx.halo.Halo;
 import com.gdx.halo.Utils.ColliderCreator;
 import com.gdx.halo.Weapons.AProjectile;
 
+import static com.gdx.halo.Halo.PLASMA_FLAG;
+
 public class PlasmaBullet extends AProjectile {
-//	class MyContactListener extends ContactListener {
-//		@Override
-//		public boolean onContactAdded (int userValue0, int partId0, int index0, int userValue1, int partId1, int index1) {
-//			if (userValue0 == Halo.PLAYER_USER_VALUE && userValue1 == Halo.PLASMA_USER_VALUE)
-//			{
-//				collidedWithPlayer = true;
-//				remove = true;
-//			}
-//			else if (userValue0 == Halo.WALL_USER_VALUE && userValue1 == Halo.PLASMA_USER_VALUE)
-//			{
-//				remove = true;
-//			}
-//			return true;
-//		}
-//	}
-	
 	public static String bulletPath = "Animations/Weapons/Plasma_Rifle/pp_4.png";
 	private static float velocity = .9f;
 	public boolean collidedWithPlayer = false;
-//	private MyContactListener myContactListener;
 	
 	public PlasmaBullet(Vector3 startPos, Quaternion rotation, Vector3 direction) {
 		super(new Texture(bulletPath), velocity, startPos, direction);
-//		this.myContactListener = new MyContactListener();
 		this.projectileDecal.setScale(0.2f, 0.2f);
 		this.projectileDecal.setRotation(rotation);
 		this.initCollider();
@@ -49,6 +33,7 @@ public class PlasmaBullet extends AProjectile {
 		gameObject.transform.set(this.projectileDecal.getPosition(), this.gameObject.transform.getRotation(new Quaternion()));
 		gameObject.body.setWorldTransform(gameObject.transform);
 		gameObject.body.setUserValue(Halo.PLASMA_USER_VALUE);
+		gameObject.body.setContactCallbackFlag(PLASMA_FLAG);
 	}
 	
 	@Override

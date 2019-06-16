@@ -25,8 +25,6 @@ import com.gdx.halo.Utils.ColliderCreator;
 import com.gdx.halo.Weapons.Alien.PlasmaBullet;
 
 import java.util.Iterator;
-
-import static com.badlogic.gdx.physics.bullet.collision.btCollisionObject.CollisionFlags.CF_CHARACTER_OBJECT;
 import static com.gdx.halo.Halo.*;
 
 public class Elite extends Enemy {
@@ -37,6 +35,13 @@ public class Elite extends Enemy {
 	private float               deathTimer = 0f;
 	private boolean             flinching = false;
 	private float               resetAnimationTimer;
+	
+	/**
+	 * Movement
+	 */
+	private Vector3             directionToPlayer;
+	private float               velocity;
+	private Vector3             direction;
 	
 	/**
 	 * Sounds
@@ -61,7 +66,7 @@ public class Elite extends Enemy {
 	
 	private void initInformation(Vector3 position)
 	{
-		this.state = State.FIRING;
+		this.state = State.WALKING;
 		this.scaleX = 3f;
 		this.scaleY = 5f;
 		this.health = 100;
@@ -74,6 +79,10 @@ public class Elite extends Enemy {
 		this.hitSounds = new Array<Sound>();
 		this.deathSounds = new Array<Sound>();
 		this.initSounds();
+		
+		this.velocity = 0.01f;
+		this.direction = new Vector3(player.getFpsCameraController().getPosition());
+		this.directionToPlayer = this.direction.sub(this.currentDecal().getPosition().nor());
 	}
 	
 	private void initSounds()
@@ -195,7 +204,8 @@ public class Elite extends Enemy {
 		}
 		else {
 			//After x amount of seconds fire again
-			this.shoot();
+			if (state == State.FIRING)
+				this.shoot();
 			this.move();
 		}
 		
@@ -280,7 +290,7 @@ public class Elite extends Enemy {
 	public void initFireAnimation() {
 		Texture shootSheet = new Texture(Gdx.files.internal("Animations/Enemies/Elite/shooting.png"));
 		TextureRegion[] walkFrames = AnimationLoader.loadAnimation(shootSheet, 2, 1);
-		fireAnimation = new Animation<TextureRegion>(0.25f, walkFrames);
+		fireAnimation = new Animation<TextureRegion>(0.70f, walkFrames);
 		fireAnimation.setPlayMode(Animation.PlayMode.LOOP);
 		firingDecal = AnimatedDecal.newAnimatedDecal(1f, 1f, fireAnimation, true);
 		firingDecal.setKeepSize(true);
@@ -354,9 +364,10 @@ public class Elite extends Enemy {
 		gameObject = new GameObject.Constructor(model, "elite", new btBoxShape(new Vector3(1.5f, 2.5f, 0.5f))).construct();
 		gameObject.body.setUserValue(Halo.ELITE_USER_VALUE);
 		gameObject.body.setCollisionFlags(gameObject.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
-		gameObject.body.setCollisionFlags(CF_CHARACTER_OBJECT);
+		//gameObject.body.setCollisionFlags(CF_CHARACTER_OBJECT);
 		gameObject.transform.set(this.firingDecal.getPosition(), this.gameObject.transform.getRotation(new Quaternion()));
 		gameObject.body.setWorldTransform(gameObject.transform);
+		//collisionWorld.addCollisionObject(this.gameObject.body, ENEMY_FLAG);
 	}
 	
 	@Override
@@ -367,7 +378,45 @@ public class Elite extends Enemy {
 	
 	@Override
 	public void move() {
+		if (this.getEliteCollide())
+		{
+			this.eliteCollide = false;
+			return ;
+		}
+		if (this.getWallCollide())
+		{
+			this.position.z -= 1f;
+			this.wallCollide = false;
+			return ;
+		}
+		int xOffset = ((int )(Math.random() * 10));
+		int zOffset = ((int )(Math.random() * 10));
 		
+		this.directionToPlayer = new Vector3(player.getFpsCameraController().getPosition());
+		
+		double destX = (this.directionToPlayer.x + xOffset) - this.currentDecal().getPosition().x;
+		double destZ = (this.directionToPlayer.z + zOffset) - this.currentDecal().getPosition().z;
+		
+		double dist = Math.sqrt(destX * destX + destZ * destZ);
+//		destX = destX / dist;
+//		destZ = destZ / dist;
+		
+		double travelX = destX * velocity;
+		double travelZ = destZ * velocity;
+		
+		double distTravel = Math.sqrt(travelX * travelX + travelZ * travelZ);
+		
+		if ( distTravel > dist)
+		{
+			this.currentDecal().setPosition((float)destX, this.currentDecal().getY(), (float)destZ);
+		}
+		else
+		{
+			double tmpX = this.currentDecal().getX() + travelX;
+			double tmpZ = this.currentDecal().getZ() + travelZ;
+			this.currentDecal().setPosition((float)tmpX, this.currentDecal().getY(), (float)tmpZ);
+			this.position = this.currentDecal().getPosition();
+		}
 	}
 	
 	@Override
@@ -387,7 +436,8 @@ public class Elite extends Enemy {
 					this.gameObject.transform.getRotation(new Quaternion()),
 					new Vector3(player.getFpsCameraController().getPosition()));
 			this.plasmaProjectiles.add(plasmaBullet);
-			this.collisionWorld.addCollisionObject(plasmaBullet.getGameObject().body, PLASMA_FLAG, PLAYER_FLAG | WALL_FLAG);
+			this.collisionWorld.addCollisionObject(plasmaBullet.getGameObject().body, PLASMA_FLAG,
+					PLAYER_FLAG | WALL_FLAG);
 			stateTime = 0;
 		}
 	}

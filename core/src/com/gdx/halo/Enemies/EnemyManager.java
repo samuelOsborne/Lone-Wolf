@@ -35,6 +35,31 @@ public class EnemyManager implements Disposable {
 		}
 	}
 	
+	public void setWallCollide(int userValue0, int userValue1, boolean wallCollide)
+	{
+		for (Enemy e : enemies)
+		{
+			if (e.getCollisionObject().getUserValue() == userValue0 ||
+					e.getCollisionObject().getUserValue() == userValue1)
+			{
+				e.setWallCollide(wallCollide);
+			}
+		}
+	}
+	
+	public void setEliteCollide(int userValue0, int userValue1, boolean wallCollide)
+	{
+		for (Enemy e : enemies)
+		{
+			if (e.getCollisionObject().getUserValue() == userValue0 ||
+					e.getCollisionObject().getUserValue() == userValue1)
+			{
+				e.setEliteCollide(wallCollide);
+				return ;
+			}
+		}
+	}
+	
 	public void emptyEnemyContainer()
 	{
 		this.enemies.clear();

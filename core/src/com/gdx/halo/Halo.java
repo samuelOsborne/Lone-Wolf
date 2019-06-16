@@ -1,6 +1,5 @@
 package com.gdx.halo;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -55,6 +54,7 @@ public class Halo implements Screen {
 	public final static short PLAYER_FLAG = 1<<9;
 	public final static short WALL_FLAG = 1<<8;
 	public final static short ENEMY_FLAG = 1<<7;
+	public final static short UNIQUE_ENEMY_FLAG = 1<<5;
 	public final static short PLASMA_FLAG = 1<<6;
 	public final static short ALL_FLAG = -1;
 	
@@ -81,18 +81,22 @@ public class Halo implements Screen {
 		
 		Grunt grunt = new Grunt(new Vector3(0, 0, 55f), this.player, collisionWorld);
 		enemyManager.addEnemy(grunt);
+		grunt.getGameObject().body.setContactCallbackFlag(ENEMY_FLAG);
 		collisionWorld.addCollisionObject(grunt.getGameObject().body, ENEMY_FLAG);
 
 		Elite elite = new Elite(new Vector3(-5, 0, 60f), this.player, collisionWorld);
 		enemyManager.addEnemy(elite);
+		elite.getGameObject().body.setContactCallbackFlag(ENEMY_FLAG);
 		collisionWorld.addCollisionObject(elite.getGameObject().body, ENEMY_FLAG);
-
-		Elite elite2 = new Elite(new Vector3(-10, 0, 60f), this.player, collisionWorld);
+		
+		Elite elite2 = new Elite(new Vector3(-15, 0, 60f), this.player, collisionWorld);
 		enemyManager.addEnemy(elite2);
+		elite2.getGameObject().body.setContactCallbackFlag(ENEMY_FLAG);
 		collisionWorld.addCollisionObject(elite2.getGameObject().body, ENEMY_FLAG);
 
-		Elite elite3 = new Elite(new Vector3(-15, 0, 60f), this.player, collisionWorld);
+		Elite elite3 = new Elite(new Vector3(-25, 0, 60f), this.player, collisionWorld);
 		enemyManager.addEnemy(elite3);
+		elite3.getGameObject().body.setContactCallbackFlag(ENEMY_FLAG);
 		collisionWorld.addCollisionObject(elite3.getGameObject().body, ENEMY_FLAG);
 
 		
@@ -224,6 +228,16 @@ public class Halo implements Screen {
 	
 	@Override
 	public void pause () {
+	}
+	
+	public void setEliteCollide(int userValue0, int userValue1, boolean eliteCollide)
+	{
+		this.enemyManager.setEliteCollide(userValue0, userValue1, eliteCollide);
+	}
+	
+	public void setWallCollide(int userValue0, int userValue1, boolean wallCollide)
+	{
+		this.enemyManager.setWallCollide(userValue0, userValue1, wallCollide);
 	}
 	
 	public Player getPlayer() { return this.player; }

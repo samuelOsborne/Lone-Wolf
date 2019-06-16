@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -20,7 +20,7 @@ public class MainMenu extends InputAdapter implements Screen {
 	 * Main menu music
 	 */
 	private final String        mainMenuMusicPath = "Sounds/Music/main_menu.mp3";
-	private Sound               bgMusic;
+	private Music               bgMusic;
 	
 	/**
 	 * Sprites
@@ -53,8 +53,8 @@ public class MainMenu extends InputAdapter implements Screen {
 		this.initSprites();
 		this.spriteBatch = new SpriteBatch();
 		Gdx.input.setInputProcessor(this);
-		this.bgMusic = Gdx.audio.newSound(Gdx.files.internal(mainMenuMusicPath));
-		this.bgMusic.loop();
+		this.bgMusic = Gdx.audio.newMusic(Gdx.files.internal(mainMenuMusicPath));
+		this.bgMusic.isLooping();
 		this.bgMusic.play();
 	}
 	
