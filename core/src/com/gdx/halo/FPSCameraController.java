@@ -132,18 +132,16 @@ public class FPSCameraController extends InputAdapter {
 			camera.direction.set(newDirection);
 	}
 	
-	public void update () {
-		update(Gdx.graphics.getDeltaTime());
-	}
-	
 	public ModelInstance    getWireFrameModelInstance()
 	{
 		return (wireFrameModelInstance);
 	}
 	
-	public void update (float deltaTime) {
+	public void update () {
 //		System.out.println("player pos : " + this.camera.position);
 //		System.out.println("player direction : " + this.camera.direction);
+		float deltaTime = Gdx.graphics.getDeltaTime();
+		
 		
 		if (keys.containsKey(FORWARD)) {
 			fwdRay.set(camera.position, forward);

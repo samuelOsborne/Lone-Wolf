@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.gdx.halo.Halo;
 import com.gdx.halo.Player.Player;
 
 public class EnemyManager implements Disposable {
@@ -27,16 +28,20 @@ public class EnemyManager implements Disposable {
 	
 	public void update()
 	{
+		boolean notAllDeadCheck = false;
+		
 		for (Enemy enemy : enemies)
 		{
-			allEnemiesDead = true;
 			if (!enemy.remove)
 			{
 				enemy.update();
-				allEnemiesDead = false;
+				notAllDeadCheck = true;
 			}
-//			if (enemy.getRemove())
-//				this.enemies.removeValue(enemy, true);
+		}
+		if (!notAllDeadCheck)
+		{
+			this.emptyEnemyContainer();
+			this.allEnemiesDead = true;
 		}
 	}
 	
@@ -67,7 +72,17 @@ public class EnemyManager implements Disposable {
 	
 	public void emptyEnemyContainer()
 	{
+		//System.out.println("all enemies dead ... clearing");
+		for (Enemy enemy : enemies)
+		{
+			if (!enemy.remove)
+			{
+				collisionWorld.removeCollisionObject(enemy.getCollisionObject());
+			}
+		}
+		
 		this.enemies.clear();
+		this.allEnemiesDead = true;
 	}
 	
 	public void render()
@@ -96,8 +111,14 @@ public class EnemyManager implements Disposable {
 	
 	public void addEnemy(Enemy enemy)
 	{
+		if (enemy.getCollisionObject().getUserValue() == Halo.ELITE_USER_VALUE)
+			System.out.println("Adding elite");
+		else if (enemy.getCollisionObject().getUserValue() == Halo.GRUNT_USER_VALUE)
+			System.out.println("Adding grunt");
+		
 		this.enemies.add(enemy);
 		enemy.gameObject.body.setUserValue(this.enemies.size - 1);
+		this.allEnemiesDead = false;
 	}
 	
 	public Array<Enemy> getEnemies() {

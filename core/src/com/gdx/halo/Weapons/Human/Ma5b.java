@@ -14,7 +14,6 @@ import com.badlogic.gdx.utils.Array;
 import com.gdx.halo.Halo;
 import com.gdx.halo.Weapons.AWeapon;
 
-import static com.badlogic.gdx.physics.bullet.collision.btCollisionObject.CollisionFlags.CF_CHARACTER_OBJECT;
 import static com.gdx.halo.Utils.RayTest.rayTest;
 
 public class Ma5b extends AWeapon {
@@ -115,6 +114,7 @@ public class Ma5b extends AWeapon {
 		if (shooting && getBulletsLeft() > 0) {
 			this.stateTime += Gdx.graphics.getDeltaTime();
 			if (this.getFireAnimation().isAnimationFinished(stateTime)) {
+				reloading = false;
 				shooting = false;
 				shootingSound = false;
 				stateTime = 0;
@@ -132,6 +132,7 @@ public class Ma5b extends AWeapon {
 			this.stateTime += Gdx.graphics.getDeltaTime();
 			if (this.getReloadAnimation().isAnimationFinished(stateTime)) {
 				reloading = false;
+				shooting = false;
 				reloadingSound = false;
 				stateTime = 0;
 				this.setBulletsLeft(this.getMagSize());
@@ -151,6 +152,7 @@ public class Ma5b extends AWeapon {
 			shooting = false;
 			shootingSound = false;
 			reloadingSound = false;
+			reloading = false;
 		}
 		spriteBatch.end();
 	}

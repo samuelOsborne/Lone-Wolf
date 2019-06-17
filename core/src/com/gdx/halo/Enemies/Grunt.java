@@ -316,7 +316,7 @@ public class Grunt extends Enemy {
 		}
 		if (this.getWallCollide())
 		{
-			this.position.z -= 1f;
+//			this.position.z -= 1f;
 			this.wallCollide = false;
 			return ;
 		}

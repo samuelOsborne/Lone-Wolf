@@ -193,14 +193,15 @@ public class Elite extends Enemy {
 			this.deathTimer += Gdx.graphics.getDeltaTime();
 			collisionWorld.removeCollisionObject(this.gameObject.body);
 			if (deathTimer >= 5)
+			{
+				System.out.println("elite dead ... removing");
 				remove = true;
+			}
 			if (!playingSound)
 			{
 				this.deathSounds.get((int )(Math.random() * 60)).play();
 				playingSound = true;
 			}
-			if (deathTimer >= 5)
-				remove = true;
 		}
 		else {
 			//After x amount of seconds fire again
@@ -386,7 +387,8 @@ public class Elite extends Enemy {
 		}
 		if (this.getWallCollide())
 		{
-			this.position.z -= 1f;
+			//this.position.z -= 1f;
+			//this.direction.scl(-1);
 			this.wallCollide = false;
 			return ;
 		}

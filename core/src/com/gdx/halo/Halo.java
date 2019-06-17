@@ -2,6 +2,7 @@ package com.gdx.halo;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Vector3;
@@ -19,6 +20,7 @@ public class Halo implements Screen {
 	private PerspectiveCamera   camera;
 	private MenuManager         menuManager;
 	private RoundManager        roundManager;
+	private Music               music;
 	
 	/**
 	 * User values
@@ -113,6 +115,13 @@ public class Halo implements Screen {
 		collisionWorld.setDebugDrawer(debugDrawer);
 		debugDrawer.setDebugMode(btIDebugDraw.DebugDrawModes.DBG_MAX_DEBUG_DRAW_MODE);
 		
+		/**
+		 * Music
+		 */
+		this.music = Gdx.audio.newMusic(Gdx.files.internal("Sounds/Music/devil_daggers.mp3"));
+		this.music.setVolume(0.35f);
+		this.music.isLooping();
+		this.music.play();
 		
 		CreateModels();
 
@@ -125,7 +134,6 @@ public class Halo implements Screen {
 				decalManager);
 		try {
 			mapReader.createMap();
-			System.out.println("enemy list size : " + this.enemyManager.getEnemies().size);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -175,6 +183,8 @@ public class Halo implements Screen {
 		player.update();
 		player.render();
 		
+		roundManager.render();
+		
 		/**
 		 * Physics
 		 */
@@ -215,6 +225,7 @@ public class Halo implements Screen {
 		camera.viewportHeight = height;
 		camera.update();
 		player.update();
+		roundManager.resize();
 	}
 	
 	@Override
