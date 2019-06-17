@@ -8,6 +8,9 @@ import com.gdx.halo.DecalManager;
 import com.gdx.halo.Enemies.Elite;
 import com.gdx.halo.Enemies.Grunt;
 import com.gdx.halo.Halo;
+import com.gdx.halo.Items.HealthPack;
+import com.gdx.halo.Items.MaIcon;
+import com.gdx.halo.Items.PistolPickup;
 import com.gdx.halo.Map.Floor;
 import com.gdx.halo.Map.Wall;
 
@@ -90,6 +93,21 @@ public class MapReader {
 				{
 					Elite elite = new Elite(new Vector3(x, 0, z), gameManager.getPlayer(), collisionWorld);
 					gameManager.getEnemyManager().addEnemy(elite);
+				}
+				else if (st.charAt(i) == 'h')
+				{
+					HealthPack healthPack = new HealthPack(new Vector3(x, -2f, z), collisionWorld);
+					gameManager.getDecalManager().addObject(healthPack);
+				}
+				else if (st.charAt(i) == 'm')
+				{
+					MaIcon ar = new MaIcon(new Vector3(x, -2f, z), collisionWorld);
+					gameManager.getDecalManager().addObject(ar);
+				}
+				else if (st.charAt(i) == 'p')
+				{
+					PistolPickup pistol = new PistolPickup(new Vector3(x, -2f, z), collisionWorld);
+					gameManager.getDecalManager().addObject(pistol);
 				}
 				Floor floor = new Floor(5 ,5, new Vector3(x, -5, z),"walls/stone_wall_01.png");
 				decalManager.addFloor(floor);

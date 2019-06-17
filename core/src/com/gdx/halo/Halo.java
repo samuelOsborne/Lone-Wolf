@@ -30,6 +30,9 @@ public class Halo implements Screen {
 	public final static int PLASMA_USER_VALUE = 2;
 	public final static int ELITE_USER_VALUE = 3;
 	public final static int GRUNT_USER_VALUE = 4;
+	public final static int HP_USER_VALUE = 5;
+	public final static int AR_USER_VALUE = 6;
+	public final static int M40_USER_VALUE = 7;
 	
 	/**
 	 * Decals

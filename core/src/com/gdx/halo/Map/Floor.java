@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.math.Vector3;
+import com.gdx.halo.GameObject;
 import com.gdx.halo.ObjectInstance;
 
 public class Floor implements ObjectInstance {
@@ -21,6 +22,11 @@ public class Floor implements ObjectInstance {
 		position.y += height/2;
 		decal.setPosition(position);
 		decal.setRotationX(90f);
+	}
+	
+	@Override
+	public GameObject getGameobject() {
+		return null;
 	}
 	
 	@Override
@@ -42,5 +48,15 @@ public class Floor implements ObjectInstance {
 	@Override
 	public void render(DecalBatch decalBatch) {
 		decalBatch.add(decal);
+	}
+	
+	@Override
+	public void onDestroy() {
+	
+	}
+	
+	@Override
+	public boolean getRender() {
+		return true;
 	}
 }

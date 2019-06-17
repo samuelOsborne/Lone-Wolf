@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.gdx.halo.Map.Floor;
@@ -26,6 +27,20 @@ public class DecalManager implements Disposable {
 		decalBatch = new DecalBatch(new CameraGroupStrategy(camera));
 	}
 	
+	public void removeObject(int userValue)
+	{
+		for (ObjectInstance objectInstance : objects)
+		{
+			if (objectInstance.getGameobject() != null &&
+					objectInstance.getGameobject().body != null &&
+					objectInstance.getGameobject().body.getUserValue() == userValue)
+			{
+				objectInstance.onDestroy();
+				objects.removeValue(objectInstance, true);
+			}
+		}
+	}
+	
 	public void addFloor(Floor floor)
 	{
 		floors.add(floor);
@@ -36,14 +51,22 @@ public class DecalManager implements Disposable {
 		walls.add(wall);
 	}
 	
+	public void addObject(ObjectInstance obj)
+	{
+		objects.add(obj);
+	}
+	
 	public void renderDecals()
 	{
 		for ( int i = 0; i < objects.size; i++)
 		{
-			Decal decal = objects.get(i).getDecal();
-			if (objects.get(i).getLookAt())
-				decal.lookAt(camera.position, camera.up);
-			decalBatch.add(decal);
+			if (objects.get(i).getRender())
+			{
+				Decal decal = objects.get(i).getDecal();
+				if (objects.get(i).getLookAt())
+					decal.lookAt(camera.position, camera.up);
+				decalBatch.add(decal);
+			}
 		}
 		
 		for (Wall wall : walls)

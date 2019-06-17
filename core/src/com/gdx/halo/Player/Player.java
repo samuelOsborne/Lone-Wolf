@@ -10,7 +10,6 @@ import com.gdx.halo.FPSCameraController;
 import com.gdx.halo.Halo;
 import com.gdx.halo.Weapons.AWeapon;
 import com.gdx.halo.Weapons.Human.Ma5b;
-import com.gdx.halo.Weapons.Human.Pistol;
 
 public class Player implements Disposable {
 	private PlayerHUD           playerHUD;
@@ -144,5 +143,13 @@ public class Player implements Disposable {
 	
 	public void setHealthBars(int healthBars) {
 		this.healthBars = healthBars;
+	}
+	
+	public AWeapon getCurrentWeapon() { return this.currentWeapon; }
+	
+	public void setCurrentWeapon(AWeapon weapon)
+	{
+		this.currentWeapon = weapon;
+		this.playerHUD.setWeapon(weapon);
 	}
 }

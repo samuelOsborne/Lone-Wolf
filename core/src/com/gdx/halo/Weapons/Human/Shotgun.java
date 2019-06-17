@@ -1,8 +1,9 @@
-package com.gdx.halo.Weapons;
+package com.gdx.halo.Weapons.Human;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
+import com.gdx.halo.Weapons.AWeapon;
 
 public class Shotgun extends AWeapon {
 	@Override

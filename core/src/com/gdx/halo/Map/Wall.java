@@ -86,7 +86,22 @@ public class Wall implements Disposable, ObjectInstance {
 		for (Decal decal : wallDecals)
 			decalBatch.add(decal);
 	}
-
+	
+	@Override
+	public void onDestroy() {
+		return ;
+	}
+	
+	@Override
+	public boolean getRender() {
+		return true;
+	}
+	
+	@Override
+	public GameObject getGameobject() {
+		return (this.gameObject);
+	}
+	
 	public void     setTransform(Vector3 _position)
 	{
 		position = _position;
